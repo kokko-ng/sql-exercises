@@ -73,15 +73,20 @@ The practice database contains three datasets:
 - **ecommerce** - Transactional data (customers, orders, products, reviews)
 - **analytics** - Event/session data (users, sessions, page views, conversions)
 
-## Running Tests
+## Validating Your Work
 
-```bash
-# Run all tests
-pytest
+Use the `check()` function in notebooks to validate your SQL queries:
 
-# Run tests for a specific notebook
-pytest tests/test_01_select_basics.py -v
+```python
+from sql_exercises import check
+
+ex_01 = '''
+SELECT * FROM employees
+'''
+check("ex_01", ex_01)
 ```
+
+The checker will show PASS/FAIL without revealing the expected answer.
 
 ## Adding New Exercises
 
