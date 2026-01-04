@@ -1,0 +1,81 @@
+{
+  "ex_01": {
+    "hash": "7a4f99a02e409acb",
+    "row_count": 10,
+    "column_count": 1,
+    "columns": [
+      "n"
+    ],
+    "hints": [
+      "Anchor: SELECT 1",
+      "Recursive: n + 1 WHERE n < 10"
+    ]
+  },
+  "ex_02": {
+    "hash": "20b1a8458144825e",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "manager_id",
+      "level"
+    ],
+    "hints": [
+      "Anchor: WHERE manager_id IS NULL",
+      "Recursive: JOIN on manager_id"
+    ]
+  },
+  "ex_03": {
+    "hash": "5b83582e15137d1c",
+    "row_count": 15,
+    "column_count": 4,
+    "columns": [
+      "category_id",
+      "category_name",
+      "parent_category_id",
+      "level"
+    ],
+    "hints": [
+      "Same pattern as employee hierarchy"
+    ]
+  },
+  "ex_04": {
+    "hash": "9ef53b66257818f9",
+    "row_count": 15,
+    "column_count": 3,
+    "columns": [
+      "category_id",
+      "category_name",
+      "full_path"
+    ],
+    "hints": [
+      "Concatenate paths with ||"
+    ]
+  },
+  "ex_05": {
+    "hash": "ce0b00e6f790ab04",
+    "row_count": 16,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "manager_id",
+      "level"
+    ],
+    "hints": [
+      "Start from manager_id = 1, not from the manager themselves"
+    ]
+  },
+  "ex_06": {
+    "hash": "46cd94a025ea4a41",
+    "row_count": 31,
+    "column_count": 1,
+    "columns": [
+      "date_val"
+    ],
+    "hints": [
+      "Use DATE and INTERVAL for date arithmetic"
+    ]
+  }
+}

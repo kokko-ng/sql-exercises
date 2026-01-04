@@ -1,0 +1,112 @@
+{
+  "ex_01": {
+    "hash": "072591ff1a0885b1",
+    "row_count": 139,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "employee_name",
+      "manager_name"
+    ],
+    "hints": [
+      "Self join on manager_id = employee_id",
+      "Concatenate names with ||"
+    ]
+  },
+  "ex_02": {
+    "hash": "adc5a24d6a4fc2b2",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "employee_name",
+      "manager_name"
+    ],
+    "hints": [
+      "Use LEFT JOIN to include those without managers"
+    ]
+  },
+  "ex_03": {
+    "hash": "764a9015a3ed2ac4",
+    "row_count": 8,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "job_title"
+    ],
+    "hints": [
+      "Simply filter WHERE manager_id IS NULL"
+    ]
+  },
+  "ex_04": {
+    "hash": "fc6700a7f0db9a10",
+    "row_count": 15,
+    "column_count": 3,
+    "columns": [
+      "category_id",
+      "category_name",
+      "parent_category_name"
+    ],
+    "hints": [
+      "Self join categories on parent_category_id"
+    ]
+  },
+  "ex_05": {
+    "hash": "2a2cf4b518ee0901",
+    "row_count": 1296,
+    "column_count": 3,
+    "columns": [
+      "emp1_name",
+      "emp2_name",
+      "department_id"
+    ],
+    "hints": [
+      "Use e1.employee_id < e2.employee_id to avoid duplicates"
+    ]
+  },
+  "ex_06": {
+    "hash": "97988fa0495af89d",
+    "row_count": 2010,
+    "column_count": 4,
+    "columns": [
+      "customer_id",
+      "first_name",
+      "order_id",
+      "total_amount"
+    ],
+    "hints": [
+      "FULL OUTER JOIN keeps all rows from both tables"
+    ]
+  },
+  "ex_07": {
+    "hash": "d57835e5e46fabc4",
+    "row_count": 10,
+    "column_count": 4,
+    "columns": [
+      "customer_id",
+      "first_name",
+      "last_name",
+      "email"
+    ],
+    "hints": [
+      "LEFT JOIN then check WHERE order_id IS NULL"
+    ]
+  },
+  "ex_08": {
+    "hash": "503572e7ad85b570",
+    "row_count": 14,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "employee_name",
+      "employee_salary",
+      "manager_name",
+      "manager_salary"
+    ],
+    "hints": [
+      "Self join and compare salaries with WHERE e.salary > m.salary"
+    ]
+  }
+}

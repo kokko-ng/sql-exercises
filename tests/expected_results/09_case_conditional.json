@@ -1,0 +1,111 @@
+{
+  "ex_01": {
+    "hash": "7ea8137d8e913907",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "department_category"
+    ],
+    "hints": [
+      "Use simple CASE on department_id"
+    ]
+  },
+  "ex_02": {
+    "hash": "82775a4ad45ad19f",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "salary",
+      "salary_level"
+    ],
+    "hints": [
+      "Use searched CASE with conditions"
+    ]
+  },
+  "ex_03": {
+    "hash": "febc6c804aca279f",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "commission_pct"
+    ],
+    "hints": [
+      "COALESCE returns first non-NULL"
+    ]
+  },
+  "ex_04": {
+    "hash": "966d0f9d494628a9",
+    "row_count": 2000,
+    "column_count": 3,
+    "columns": [
+      "order_id",
+      "order_status",
+      "status_label"
+    ],
+    "hints": [
+      "Simple CASE on order_status"
+    ]
+  },
+  "ex_05": {
+    "hash": "f6bc0dc9264eb46e",
+    "row_count": 8,
+    "column_count": 4,
+    "columns": [
+      "department_id",
+      "low_count",
+      "medium_count",
+      "high_count"
+    ],
+    "hints": [
+      "SUM(CASE WHEN ... THEN 1 ELSE 0 END) counts conditionally"
+    ]
+  },
+  "ex_06": {
+    "hash": "84899c7101145ee5",
+    "row_count": 147,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "salary",
+      "commission_pct",
+      "total_compensation"
+    ],
+    "hints": [
+      "COALESCE handles NULL commission"
+    ]
+  },
+  "ex_07": {
+    "hash": "6c73b246d401a847",
+    "row_count": 45,
+    "column_count": 4,
+    "columns": [
+      "product_id",
+      "poor_count",
+      "average_count",
+      "good_count"
+    ],
+    "hints": [
+      "Conditional counting per category"
+    ]
+  },
+  "ex_08": {
+    "hash": "873b39125362448b",
+    "row_count": 4,
+    "column_count": 3,
+    "columns": [
+      "tier_label",
+      "customer_count",
+      "total_revenue"
+    ],
+    "hints": [
+      "Join customers with orders, CASE on tier"
+    ]
+  }
+}

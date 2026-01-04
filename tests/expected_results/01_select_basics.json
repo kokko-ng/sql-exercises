@@ -1,0 +1,167 @@
+{
+  "ex_01": {
+    "hash": "116129229802514e",
+    "row_count": 147,
+    "column_count": 12,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "email",
+      "phone",
+      "hire_date",
+      "job_title",
+      "salary",
+      "commission_pct",
+      "manager_id",
+      "department_id",
+      "is_active"
+    ],
+    "hints": [
+      "Use SELECT * to get all columns",
+      "FROM specifies the table"
+    ]
+  },
+  "ex_02": {
+    "hash": "f5a2b125228a115d",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "first_name",
+      "last_name",
+      "email"
+    ],
+    "hints": [
+      "List column names separated by commas",
+      "No need for WHERE clause"
+    ]
+  },
+  "ex_03": {
+    "hash": "54f2ecd504ffa319",
+    "row_count": 147,
+    "column_count": 2,
+    "columns": [
+      "name",
+      "annual_pay"
+    ],
+    "hints": [
+      "Use AS to create an alias",
+      "Syntax: column_name AS alias"
+    ]
+  },
+  "ex_04": {
+    "hash": "1bb09be2d3a378c7",
+    "row_count": 17,
+    "column_count": 12,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "email",
+      "phone",
+      "hire_date",
+      "job_title",
+      "salary",
+      "commission_pct",
+      "manager_id",
+      "department_id",
+      "is_active"
+    ],
+    "hints": [
+      "Use WHERE with = for equality",
+      "department_id is a number"
+    ]
+  },
+  "ex_05": {
+    "hash": "da10330e47cce421",
+    "row_count": 71,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "hints": [
+      "Use > for greater than comparison",
+      "Salary is stored as a number"
+    ]
+  },
+  "ex_06": {
+    "hash": "5af35e6bc9acfae4",
+    "row_count": 41,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "job_title"
+    ],
+    "hints": [
+      "Use LIKE with % wildcards",
+      "'%text%' matches text anywhere"
+    ]
+  },
+  "ex_07": {
+    "hash": "55f262e3d8b0524c",
+    "row_count": 53,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "department_id"
+    ],
+    "hints": [
+      "IN matches any value in a list",
+      "Syntax: column IN (val1, val2, ...)"
+    ]
+  },
+  "ex_08": {
+    "hash": "09dd593517e237d7",
+    "row_count": 34,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "hints": [
+      "BETWEEN includes both endpoints",
+      "BETWEEN low AND high"
+    ]
+  },
+  "ex_09": {
+    "hash": "4dd2c8730065de1d",
+    "row_count": 15,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "department_id",
+      "salary"
+    ],
+    "hints": [
+      "Use parentheses to group AND conditions",
+      "OR combines the groups"
+    ]
+  },
+  "ex_10": {
+    "hash": "dbba798544626a63",
+    "row_count": 16,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "commission_pct",
+      "salary"
+    ],
+    "hints": [
+      "IS NOT NULL checks for non-NULL",
+      "Combine with AND for multiple conditions"
+    ]
+  }
+}

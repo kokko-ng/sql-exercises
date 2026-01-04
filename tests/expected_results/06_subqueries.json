@@ -1,0 +1,144 @@
+{
+  "ex_01": {
+    "hash": "436b1d27a242bdb9",
+    "row_count": 65,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "hints": [
+      "Subquery calculates AVG(salary)",
+      "Compare with WHERE salary >"
+    ]
+  },
+  "ex_02": {
+    "hash": "82bba4a13c01ccf8",
+    "row_count": 35,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "department_id"
+    ],
+    "hints": [
+      "Subquery finds department_ids in San Francisco",
+      "Use IN"
+    ]
+  },
+  "ex_03": {
+    "hash": "2e1cfa82b035c26c",
+    "row_count": 0,
+    "column_count": 2,
+    "columns": [
+      "product_id",
+      "product_name"
+    ],
+    "hints": [
+      "Subquery gets all ordered product_ids",
+      "Use NOT IN"
+    ]
+  },
+  "ex_04": {
+    "hash": "63e2e625c8bf9b90",
+    "row_count": 490,
+    "column_count": 3,
+    "columns": [
+      "customer_id",
+      "first_name",
+      "last_name"
+    ],
+    "hints": [
+      "EXISTS checks if any order exists",
+      "Correlate on customer_id"
+    ]
+  },
+  "ex_05": {
+    "hash": "3b9e854d97549f16",
+    "row_count": 10,
+    "column_count": 3,
+    "columns": [
+      "customer_id",
+      "first_name",
+      "last_name"
+    ],
+    "hints": [
+      "NOT EXISTS = no matching rows",
+      "Same correlation as EXISTS"
+    ]
+  },
+  "ex_06": {
+    "hash": "483554ab6d8e6fb3",
+    "row_count": 8,
+    "column_count": 2,
+    "columns": [
+      "department_name",
+      "total_company_employees"
+    ],
+    "hints": [
+      "Scalar subquery in SELECT",
+      "Returns same value for all rows"
+    ]
+  },
+  "ex_07": {
+    "hash": "663039707fcaf9b3",
+    "row_count": 8,
+    "column_count": 2,
+    "columns": [
+      "department_id",
+      "avg_salary"
+    ],
+    "hints": [
+      "Subquery in FROM creates a derived table",
+      "Filter with WHERE"
+    ]
+  },
+  "ex_08": {
+    "hash": "04fa896caed811b8",
+    "row_count": 69,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "salary",
+      "department_id"
+    ],
+    "hints": [
+      "Correlated subquery references outer table",
+      "e2.department_id = e.department_id"
+    ]
+  },
+  "ex_09": {
+    "hash": "bbc8f45855926edc",
+    "row_count": 1,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "hints": [
+      "Subquery finds MAX(salary)",
+      "WHERE salary = that value"
+    ]
+  },
+  "ex_10": {
+    "hash": "40496fda5cc3cb24",
+    "row_count": 21,
+    "column_count": 3,
+    "columns": [
+      "product_id",
+      "product_name",
+      "avg_rating"
+    ],
+    "hints": [
+      "Join products with reviews",
+      "HAVING with subquery for overall avg"
+    ]
+  }
+}

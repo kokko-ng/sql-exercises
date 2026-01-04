@@ -1,0 +1,150 @@
+{
+  "ex_01": {
+    "hash": "42984a7bffb791ea",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "department_name"
+    ],
+    "hints": [
+      "JOIN employees with departments",
+      "Match on department_id"
+    ]
+  },
+  "ex_02": {
+    "hash": "42984a7bffb791ea",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "department_name"
+    ],
+    "hints": [
+      "Use e for employees, d for departments",
+      "Same logic as ex_01"
+    ]
+  },
+  "ex_03": {
+    "hash": "760b678f33817aee",
+    "row_count": 8,
+    "column_count": 3,
+    "columns": [
+      "department_id",
+      "department_name",
+      "employee_count"
+    ],
+    "hints": [
+      "LEFT JOIN to keep all departments",
+      "COUNT the employee_id column"
+    ]
+  },
+  "ex_04": {
+    "hash": "38dfd3fb3f153edc",
+    "row_count": 17,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "department_name"
+    ],
+    "hints": [
+      "JOIN first, then WHERE",
+      "Filter by department_name"
+    ]
+  },
+  "ex_05": {
+    "hash": "6a813ae17bc3ac42",
+    "row_count": 138,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "project_name",
+      "role"
+    ],
+    "hints": [
+      "Chain two JOINs",
+      "employees -> project_assignments -> projects"
+    ]
+  },
+  "ex_06": {
+    "hash": "0403a8ed96604b8d",
+    "row_count": 8,
+    "column_count": 2,
+    "columns": [
+      "department_name",
+      "avg_salary"
+    ],
+    "hints": [
+      "JOIN then GROUP BY department_name",
+      "AVG on salary"
+    ]
+  },
+  "ex_07": {
+    "hash": "5043d05380281288",
+    "row_count": 2000,
+    "column_count": 5,
+    "columns": [
+      "order_id",
+      "order_date",
+      "first_name",
+      "last_name",
+      "total_amount"
+    ],
+    "hints": [
+      "JOIN orders with customers",
+      "Match on customer_id"
+    ]
+  },
+  "ex_08": {
+    "hash": "bcbdd6c3d7322e63",
+    "row_count": 6116,
+    "column_count": 4,
+    "columns": [
+      "order_id",
+      "product_name",
+      "quantity",
+      "line_total"
+    ],
+    "hints": [
+      "JOIN order_items with products",
+      "Match on product_id"
+    ]
+  },
+  "ex_09": {
+    "hash": "2e1cfa82b035c26c",
+    "row_count": 0,
+    "column_count": 2,
+    "columns": [
+      "product_id",
+      "product_name"
+    ],
+    "hints": [
+      "LEFT JOIN products to reviews",
+      "WHERE review_id IS NULL"
+    ]
+  },
+  "ex_10": {
+    "hash": "6b5d4cbe68e8ec4f",
+    "row_count": 490,
+    "column_count": 5,
+    "columns": [
+      "customer_id",
+      "first_name",
+      "last_name",
+      "order_count",
+      "total_spent"
+    ],
+    "hints": [
+      "JOIN customers to orders",
+      "GROUP BY customer columns"
+    ]
+  }
+}

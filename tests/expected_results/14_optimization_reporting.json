@@ -1,0 +1,128 @@
+{
+  "ex_01": {
+    "hash": "a438ba4171df2c5c",
+    "row_count": 490,
+    "column_count": 6,
+    "columns": [
+      "customer_id",
+      "first_name",
+      "last_name",
+      "total_orders",
+      "total_spent",
+      "avg_order_value"
+    ],
+    "hints": [
+      "JOIN customers with orders",
+      "GROUP BY customer columns"
+    ]
+  },
+  "ex_02": {
+    "hash": "e27889de0dfab834",
+    "row_count": 8,
+    "column_count": 5,
+    "columns": [
+      "department_name",
+      "emp_count",
+      "total_salary",
+      "avg_salary",
+      "top_earner"
+    ],
+    "hints": [
+      "Two CTEs: one for stats, one for top earner with ROW_NUMBER"
+    ]
+  },
+  "ex_03": {
+    "hash": "f6e796a219144483",
+    "row_count": 10,
+    "column_count": 4,
+    "columns": [
+      "product_name",
+      "category_name",
+      "total_qty_sold",
+      "total_revenue"
+    ],
+    "hints": [
+      "Join products, categories, order_items",
+      "ORDER BY revenue DESC LIMIT 10"
+    ]
+  },
+  "ex_04": {
+    "hash": "e6f4916def362faf",
+    "row_count": 25,
+    "column_count": 4,
+    "columns": [
+      "order_month",
+      "monthly_revenue",
+      "prev_month_revenue",
+      "growth_pct"
+    ],
+    "hints": [
+      "CTE for monthly totals",
+      "LAG for previous month"
+    ]
+  },
+  "ex_05": {
+    "hash": "c6a2c8ba6c314776",
+    "row_count": 3,
+    "column_count": 4,
+    "columns": [
+      "segment",
+      "customer_count",
+      "total_revenue",
+      "avg_revenue_per_customer"
+    ],
+    "hints": [
+      "CTE for spending, CASE for segments",
+      "Aggregate by segment"
+    ]
+  },
+  "ex_06": {
+    "hash": "74c4f8f1344ccb79",
+    "row_count": 20,
+    "column_count": 6,
+    "columns": [
+      "order_id",
+      "customer_name",
+      "order_date",
+      "product_count",
+      "order_total",
+      "customer_running_total"
+    ],
+    "hints": [
+      "CTE for order details",
+      "Window for running total"
+    ]
+  },
+  "ex_07": {
+    "hash": "146a16353e495300",
+    "row_count": 1,
+    "column_count": 5,
+    "columns": [
+      "total_customers",
+      "total_orders",
+      "total_revenue",
+      "avg_order_value",
+      "top_product"
+    ],
+    "hints": [
+      "Multiple CTEs or subqueries",
+      "Cross join for single row"
+    ]
+  },
+  "ex_08": {
+    "hash": "3ba35c257ba56036",
+    "row_count": 20,
+    "column_count": 5,
+    "columns": [
+      "user_id",
+      "total_sessions",
+      "total_page_views",
+      "avg_session_duration",
+      "conversion_count"
+    ],
+    "hints": [
+      "Multiple CTEs for each metric",
+      "LEFT JOIN to combine"
+    ]
+  }
+}

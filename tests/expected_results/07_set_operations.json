@@ -1,0 +1,93 @@
+{
+  "ex_01": {
+    "hash": "2c914e6036471af9",
+    "row_count": 290,
+    "column_count": 1,
+    "columns": [
+      "first_name"
+    ],
+    "hints": [
+      "UNION removes duplicates automatically"
+    ]
+  },
+  "ex_02": {
+    "hash": "76983560a23de609",
+    "row_count": 647,
+    "column_count": 1,
+    "columns": [
+      "email"
+    ],
+    "hints": [
+      "UNION ALL keeps all rows including duplicates"
+    ]
+  },
+  "ex_03": {
+    "hash": "848246acf0d101cf",
+    "row_count": 647,
+    "column_count": 3,
+    "columns": [
+      "full_name",
+      "email",
+      "source"
+    ],
+    "hints": [
+      "Add a literal string column for source"
+    ]
+  },
+  "ex_04": {
+    "hash": "9a3fcf4de789b596",
+    "row_count": 63,
+    "column_count": 1,
+    "columns": [
+      "first_name"
+    ],
+    "hints": [
+      "INTERSECT finds common values"
+    ]
+  },
+  "ex_05": {
+    "hash": "59e06b2959083e61",
+    "row_count": 191,
+    "column_count": 1,
+    "columns": [
+      "first_name"
+    ],
+    "hints": [
+      "EXCEPT finds values in first but not second"
+    ]
+  },
+  "ex_06": {
+    "hash": "6f359c5afa6d13c2",
+    "row_count": 950,
+    "column_count": 1,
+    "columns": [
+      "city"
+    ],
+    "hints": [
+      "ORDER BY applies to the entire result"
+    ]
+  },
+  "ex_07": {
+    "hash": "cf5065f6dd996769",
+    "row_count": 45,
+    "column_count": 2,
+    "columns": [
+      "product_id",
+      "status"
+    ],
+    "hints": [
+      "Two queries: one for ordered, one for not ordered"
+    ]
+  },
+  "ex_08": {
+    "hash": "6599229373d9ae91",
+    "row_count": 7,
+    "column_count": 1,
+    "columns": [
+      "location"
+    ],
+    "hints": [
+      "Departments location EXCEPT addresses city"
+    ]
+  }
+}

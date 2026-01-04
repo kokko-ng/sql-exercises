@@ -1,0 +1,146 @@
+{
+  "ex_01": {
+    "hash": "924a0c734e51fba9",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name"
+    ],
+    "hints": [
+      "Use ORDER BY column_name",
+      "ASC is optional for ascending"
+    ]
+  },
+  "ex_02": {
+    "hash": "c9f56af7be560731",
+    "row_count": 10,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "hints": [
+      "DESC for descending order",
+      "LIMIT restricts row count"
+    ]
+  },
+  "ex_03": {
+    "hash": "615455b8d8047bec",
+    "row_count": 40,
+    "column_count": 1,
+    "columns": [
+      "job_title"
+    ],
+    "hints": [
+      "DISTINCT removes duplicates",
+      "Only select the job_title column"
+    ]
+  },
+  "ex_04": {
+    "hash": "1651247f3050eca9",
+    "row_count": 10,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name"
+    ],
+    "hints": [
+      "OFFSET skips rows",
+      "OFFSET 10 skips first 10 rows"
+    ]
+  },
+  "ex_05": {
+    "hash": "ef871e33187285aa",
+    "row_count": 147,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "department_id",
+      "salary"
+    ],
+    "hints": [
+      "List multiple columns after ORDER BY",
+      "Separate with commas"
+    ]
+  },
+  "ex_06": {
+    "hash": "816bc4eeafd66f71",
+    "row_count": 5,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "hire_date"
+    ],
+    "hints": [
+      "Filter first with WHERE",
+      "Then ORDER BY and LIMIT"
+    ]
+  },
+  "ex_07": {
+    "hash": "8884bf5324fe518b",
+    "row_count": 40,
+    "column_count": 2,
+    "columns": [
+      "department_id",
+      "job_title"
+    ],
+    "hints": [
+      "DISTINCT on multiple columns",
+      "Removes duplicate combinations"
+    ]
+  },
+  "ex_08": {
+    "hash": "069a33344ec424f8",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "commission_pct"
+    ],
+    "hints": [
+      "NULLS LAST puts NULL values at end",
+      "Works with DESC"
+    ]
+  },
+  "ex_09": {
+    "hash": "e32fe5065430d314",
+    "row_count": 3,
+    "column_count": 4,
+    "columns": [
+      "product_id",
+      "product_name",
+      "unit_price",
+      "category_id"
+    ],
+    "hints": [
+      "Filter with WHERE IN",
+      "Order and limit the results"
+    ]
+  },
+  "ex_10": {
+    "hash": "30513e40b9453948",
+    "row_count": 10,
+    "column_count": 4,
+    "columns": [
+      "product_id",
+      "product_name",
+      "unit_price",
+      "cost_price"
+    ],
+    "hints": [
+      "ORDER BY can use expressions",
+      "Calculate in the ORDER BY clause"
+    ]
+  }
+}

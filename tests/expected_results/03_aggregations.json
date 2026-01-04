@@ -1,0 +1,166 @@
+{
+  "ex_01": {
+    "hash": "c1ae70ea05271538",
+    "row_count": 1,
+    "column_count": 1,
+    "columns": [
+      "total_employees"
+    ],
+    "hints": [
+      "Use COUNT(*) to count all rows",
+      "Alias with AS"
+    ]
+  },
+  "ex_02": {
+    "hash": "19857879eac89ef6",
+    "row_count": 1,
+    "column_count": 4,
+    "columns": [
+      "total_salary",
+      "avg_salary",
+      "min_salary",
+      "max_salary"
+    ],
+    "hints": [
+      "Multiple aggregates in one SELECT",
+      "Use aliases for clarity"
+    ]
+  },
+  "ex_03": {
+    "hash": "1ed70f8ce4f4346d",
+    "row_count": 1,
+    "column_count": 1,
+    "columns": [
+      "high_earners"
+    ],
+    "hints": [
+      "Use WHERE to filter before counting",
+      "COUNT after WHERE"
+    ]
+  },
+  "ex_04": {
+    "hash": "d7fd6f580f2ae7ec",
+    "row_count": 8,
+    "column_count": 2,
+    "columns": [
+      "department_id",
+      "employee_count"
+    ],
+    "hints": [
+      "GROUP BY the column you want to group on",
+      "COUNT per group"
+    ]
+  },
+  "ex_05": {
+    "hash": "d1d5a71c642471d7",
+    "row_count": 8,
+    "column_count": 4,
+    "columns": [
+      "department_id",
+      "emp_count",
+      "avg_salary",
+      "total_salary"
+    ],
+    "hints": [
+      "Multiple aggregates work with GROUP BY",
+      "All get calculated per group"
+    ]
+  },
+  "ex_06": {
+    "hash": "d7fd6f580f2ae7ec",
+    "row_count": 8,
+    "column_count": 2,
+    "columns": [
+      "department_id",
+      "employee_count"
+    ],
+    "hints": [
+      "HAVING filters groups, not rows",
+      "Use HAVING after GROUP BY"
+    ]
+  },
+  "ex_07": {
+    "hash": "a435e1d39df504ce",
+    "row_count": 8,
+    "column_count": 3,
+    "columns": [
+      "department_id",
+      "total_employees",
+      "employees_with_commission"
+    ],
+    "hints": [
+      "COUNT(*) counts all, COUNT(col) counts non-NULL",
+      "commission_pct can be NULL"
+    ]
+  },
+  "ex_08": {
+    "hash": "075db3263f79090a",
+    "row_count": 8,
+    "column_count": 2,
+    "columns": [
+      "department_id",
+      "unique_job_titles"
+    ],
+    "hints": [
+      "COUNT(DISTINCT col) counts unique values",
+      "Per group with GROUP BY"
+    ]
+  },
+  "ex_09": {
+    "hash": "fa9dd6707b142819",
+    "row_count": 25,
+    "column_count": 3,
+    "columns": [
+      "job_title",
+      "avg_salary",
+      "employee_count"
+    ],
+    "hints": [
+      "WHERE before GROUP BY",
+      "HAVING after GROUP BY"
+    ]
+  },
+  "ex_10": {
+    "hash": "cec40b8f3bf7f8e1",
+    "row_count": 6,
+    "column_count": 3,
+    "columns": [
+      "order_status",
+      "total_revenue",
+      "order_count"
+    ],
+    "hints": [
+      "Group by status",
+      "Filter with HAVING, sort with ORDER BY"
+    ]
+  },
+  "ex_11": {
+    "hash": "1efb644911d75a15",
+    "row_count": 14,
+    "column_count": 4,
+    "columns": [
+      "department_id",
+      "is_active",
+      "emp_count",
+      "avg_salary"
+    ],
+    "hints": [
+      "GROUP BY multiple columns",
+      "Creates groups for each combination"
+    ]
+  },
+  "ex_12": {
+    "hash": "abfb1b70fa45c0a9",
+    "row_count": 45,
+    "column_count": 3,
+    "columns": [
+      "product_id",
+      "avg_rating",
+      "review_count"
+    ],
+    "hints": [
+      "Use reviews table",
+      "HAVING for minimum review count"
+    ]
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "ex_01": {
+    "hash": "567b0182393a85fe",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "row_num",
+      "employee_id",
+      "first_name",
+      "salary"
+    ],
+    "hints": [
+      "ROW_NUMBER() OVER (ORDER BY ...)"
+    ]
+  },
+  "ex_02": {
+    "hash": "5498e22f2efae46b",
+    "row_count": 147,
+    "column_count": 5,
+    "columns": [
+      "department_id",
+      "employee_id",
+      "first_name",
+      "salary",
+      "dept_rank"
+    ],
+    "hints": [
+      "Add PARTITION BY department_id"
+    ]
+  },
+  "ex_03": {
+    "hash": "244589bf3a7fd4b0",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "salary",
+      "salary_rank",
+      "salary_dense_rank"
+    ],
+    "hints": [
+      "Use both RANK and DENSE_RANK"
+    ]
+  },
+  "ex_04": {
+    "hash": "db9a96b9b5ac038f",
+    "row_count": 24,
+    "column_count": 5,
+    "columns": [
+      "department_id",
+      "employee_id",
+      "first_name",
+      "salary",
+      "dept_rank"
+    ],
+    "hints": [
+      "CTE with ROW_NUMBER, filter WHERE rank <= 3"
+    ]
+  },
+  "ex_05": {
+    "hash": "1430e09e8a1fbffa",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "salary",
+      "salary_quartile"
+    ],
+    "hints": [
+      "NTILE(4) divides into 4 groups"
+    ]
+  },
+  "ex_06": {
+    "hash": "207363e2fb802293",
+    "row_count": 45,
+    "column_count": 5,
+    "columns": [
+      "category_id",
+      "product_id",
+      "product_name",
+      "unit_price",
+      "price_rank"
+    ],
+    "hints": [
+      "PARTITION BY category_id"
+    ]
+  },
+  "ex_07": {
+    "hash": "e9cb65e5ab9bfe12",
+    "row_count": 2000,
+    "column_count": 4,
+    "columns": [
+      "customer_id",
+      "order_id",
+      "total_amount",
+      "order_rank"
+    ],
+    "hints": [
+      "PARTITION BY customer_id ORDER BY total_amount DESC"
+    ]
+  },
+  "ex_08": {
+    "hash": "4a77260b68760ae6",
+    "row_count": 490,
+    "column_count": 3,
+    "columns": [
+      "customer_id",
+      "order_id",
+      "total_amount"
+    ],
+    "hints": [
+      "ROW_NUMBER with filter rn = 1"
+    ]
+  }
+}

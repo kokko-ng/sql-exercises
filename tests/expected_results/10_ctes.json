@@ -1,0 +1,101 @@
+{
+  "ex_01": {
+    "hash": "436b1d27a242bdb9",
+    "row_count": 65,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "hints": [
+      "CTE calculates average",
+      "Main query filters against it"
+    ]
+  },
+  "ex_02": {
+    "hash": "c4e561d6322ab674",
+    "row_count": 8,
+    "column_count": 3,
+    "columns": [
+      "department_id",
+      "emp_count",
+      "avg_salary"
+    ],
+    "hints": [
+      "Aggregate in CTE",
+      "Filter in main query"
+    ]
+  },
+  "ex_03": {
+    "hash": "166976d013d6333d",
+    "row_count": 8,
+    "column_count": 3,
+    "columns": [
+      "department_id",
+      "dept_avg_salary",
+      "company_avg_salary"
+    ],
+    "hints": [
+      "Two separate CTEs",
+      "Cross join or comma join them"
+    ]
+  },
+  "ex_04": {
+    "hash": "da66ea434ff27436",
+    "row_count": 10,
+    "column_count": 4,
+    "columns": [
+      "customer_id",
+      "first_name",
+      "last_name",
+      "order_count"
+    ],
+    "hints": [
+      "CTE for ranking",
+      "Join back to get customer details"
+    ]
+  },
+  "ex_05": {
+    "hash": "84ff6708a88a14a9",
+    "row_count": 24,
+    "column_count": 3,
+    "columns": [
+      "order_month",
+      "monthly_revenue",
+      "order_count"
+    ],
+    "hints": [
+      "DATE_TRUNC in CTE",
+      "Filter high revenue months"
+    ]
+  },
+  "ex_06": {
+    "hash": "720ebffc7ba12f65",
+    "row_count": 11,
+    "column_count": 3,
+    "columns": [
+      "category_name",
+      "total_products_sold",
+      "total_revenue"
+    ],
+    "hints": [
+      "One CTE for sales, one for categories",
+      "Join them in main"
+    ]
+  },
+  "ex_07": {
+    "hash": "f00efe60c0cee6b0",
+    "row_count": 8,
+    "column_count": 3,
+    "columns": [
+      "department_id",
+      "high_earner_count",
+      "total_high_earners_company"
+    ],
+    "hints": [
+      "Reference same CTE in SELECT and FROM"
+    ]
+  }
+}

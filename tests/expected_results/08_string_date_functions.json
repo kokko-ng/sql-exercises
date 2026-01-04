@@ -1,0 +1,132 @@
+{
+  "ex_01": {
+    "hash": "409e7563eafcf934",
+    "row_count": 147,
+    "column_count": 2,
+    "columns": [
+      "employee_id",
+      "full_name"
+    ],
+    "hints": [
+      "Use || to concatenate strings"
+    ]
+  },
+  "ex_02": {
+    "hash": "46b59644161bdcb7",
+    "row_count": 45,
+    "column_count": 3,
+    "columns": [
+      "product_id",
+      "upper_name",
+      "lower_name"
+    ],
+    "hints": [
+      "UPPER and LOWER transform case"
+    ]
+  },
+  "ex_03": {
+    "hash": "30c2e296e90b873f",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "hire_year"
+    ],
+    "hints": [
+      "YEAR() extracts the year component"
+    ]
+  },
+  "ex_04": {
+    "hash": "cf12a30cccfd28cf",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "employee_id",
+      "email",
+      "domain"
+    ],
+    "hints": [
+      "POSITION finds @ location, SUBSTRING extracts after"
+    ]
+  },
+  "ex_05": {
+    "hash": "a9c7bf4d38150e87",
+    "row_count": 25,
+    "column_count": 2,
+    "columns": [
+      "order_month",
+      "order_count"
+    ],
+    "hints": [
+      "DATE_TRUNC groups by month",
+      "GROUP BY the same expression"
+    ]
+  },
+  "ex_06": {
+    "hash": "ea51bccc7a9a6555",
+    "row_count": 147,
+    "column_count": 4,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "hire_date",
+      "days_employed"
+    ],
+    "hints": [
+      "Subtract dates for difference in days"
+    ]
+  },
+  "ex_07": {
+    "hash": "eafe571f6262c0f4",
+    "row_count": 12,
+    "column_count": 3,
+    "columns": [
+      "product_id",
+      "product_name",
+      "name_length"
+    ],
+    "hints": [
+      "LENGTH returns character count",
+      "Filter with WHERE"
+    ]
+  },
+  "ex_08": {
+    "hash": "860b21f095d4e8eb",
+    "row_count": 25,
+    "column_count": 2,
+    "columns": [
+      "month_start",
+      "monthly_revenue"
+    ],
+    "hints": [
+      "DATE_TRUNC + SUM grouped by month"
+    ]
+  },
+  "ex_09": {
+    "hash": "c2ac2b2b3ac5c3a7",
+    "row_count": 3386,
+    "column_count": 3,
+    "columns": [
+      "session_id",
+      "user_id",
+      "session_duration_seconds"
+    ],
+    "hints": [
+      "Simple WHERE filter on duration"
+    ]
+  },
+  "ex_10": {
+    "hash": "c6945c589f8498a0",
+    "row_count": 147,
+    "column_count": 3,
+    "columns": [
+      "display_name",
+      "hire_year",
+      "formatted_salary"
+    ],
+    "hints": [
+      "Combine UPPER, concatenation, and CAST"
+    ]
+  }
+}

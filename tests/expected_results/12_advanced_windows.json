@@ -1,0 +1,100 @@
+{
+  "ex_01": {
+    "hash": "fa6e2863d7decc04",
+    "row_count": 365,
+    "column_count": 3,
+    "columns": [
+      "metric_date",
+      "metric_value",
+      "prev_day_value"
+    ],
+    "hints": [
+      "LAG(col, 1) gets previous row"
+    ]
+  },
+  "ex_02": {
+    "hash": "255d809a05e47f1f",
+    "row_count": 50,
+    "column_count": 4,
+    "columns": [
+      "order_id",
+      "order_date",
+      "total_amount",
+      "running_total"
+    ],
+    "hints": [
+      "SUM OVER with ROWS UNBOUNDED PRECEDING"
+    ]
+  },
+  "ex_03": {
+    "hash": "a5a0cd7d662931ca",
+    "row_count": 365,
+    "column_count": 3,
+    "columns": [
+      "metric_date",
+      "metric_value",
+      "daily_change"
+    ],
+    "hints": [
+      "Subtract LAG from current value"
+    ]
+  },
+  "ex_04": {
+    "hash": "ac722aa5b15d127a",
+    "row_count": 147,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "department_id",
+      "salary",
+      "dept_max_salary"
+    ],
+    "hints": [
+      "FIRST_VALUE with ORDER BY salary DESC"
+    ]
+  },
+  "ex_05": {
+    "hash": "ebe0ba2449905124",
+    "row_count": 2000,
+    "column_count": 5,
+    "columns": [
+      "customer_id",
+      "order_id",
+      "order_date",
+      "total_amount",
+      "customer_running_total"
+    ],
+    "hints": [
+      "Add PARTITION BY customer_id"
+    ]
+  },
+  "ex_06": {
+    "hash": "6c1a0c2e817c70dd",
+    "row_count": 365,
+    "column_count": 3,
+    "columns": [
+      "metric_date",
+      "metric_value",
+      "moving_avg_3day"
+    ],
+    "hints": [
+      "ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING"
+    ]
+  },
+  "ex_07": {
+    "hash": "d523366a109f8038",
+    "row_count": 147,
+    "column_count": 5,
+    "columns": [
+      "employee_id",
+      "first_name",
+      "department_id",
+      "salary",
+      "pct_of_dept_total"
+    ],
+    "hints": [
+      "salary / SUM(salary) OVER partition"
+    ]
+  }
+}
