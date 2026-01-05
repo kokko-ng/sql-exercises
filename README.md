@@ -11,6 +11,7 @@ source .venv/bin/activate
 
 # 2. Install dependencies
 pip install -r requirements.txt
+pip install -e .
 
 # 3. Initialize the practice database
 python data/scripts/init_database.py
