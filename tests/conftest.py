@@ -1,14 +1,16 @@
-"""
-Pytest Configuration for SQL Exercises
+"""Pytest Configuration for SQL Exercises.
 
 Provides fixtures for database connections, solution loading, and query validation.
 """
 
-import pytest
-import duckdb
 import hashlib
 import json
 from pathlib import Path
+from typing import Any, Callable, Generator, Optional
+
+import duckdb
+import pandas as pd
+import pytest
 
 # Paths
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -18,9 +20,8 @@ EXPECTED_DIR = PROJECT_ROOT / "tests" / "expected_results"
 
 
 @pytest.fixture(scope="session")
-def db_connection():
-    """
-    Session-scoped database connection.
+def db_connection() -> Generator[duckdb.DuckDBPyConnection, None, None]:
+    """Provide session-scoped database connection.
 
     Returns a read-only connection to the practice database.
     The same connection is reused across all tests in a session.
@@ -39,9 +40,8 @@ def db_connection():
 
 
 @pytest.fixture
-def db(db_connection):
-    """
-    Alias for db_connection for convenience.
+def db(db_connection: duckdb.DuckDBPyConnection) -> duckdb.DuckDBPyConnection:
+    """Provide alias for db_connection for convenience.
 
     Example:
         def test_query(db):
@@ -51,50 +51,54 @@ def db(db_connection):
 
 
 @pytest.fixture
-def execute_query(db_connection):
-    """
-    Factory fixture to execute queries and return DataFrames.
+def execute_query(
+    db_connection: duckdb.DuckDBPyConnection,
+) -> Callable[[str], pd.DataFrame]:
+    """Provide factory fixture to execute queries and return DataFrames.
 
     Example:
         def test_something(execute_query):
             df = execute_query("SELECT * FROM employees WHERE salary > 50000")
             assert len(df) > 0
     """
-    def _execute(query: str):
+
+    def _execute(query: str) -> pd.DataFrame:
         return db_connection.execute(query).fetchdf()
+
     return _execute
 
 
 @pytest.fixture
-def load_expected():
-    """
-    Factory fixture to load expected results for a notebook.
+def load_expected() -> Callable[[str], dict[str, Any]]:
+    """Provide factory fixture to load expected results for a notebook.
 
     Example:
         def test_exercise(load_expected):
             expected = load_expected("01_select_basics")
             ex_01 = expected["ex_01"]
     """
-    def _load(notebook_name: str) -> dict:
+
+    def _load(notebook_name: str) -> dict[str, Any]:
         expected_file = EXPECTED_DIR / f"{notebook_name}.json"
         if not expected_file.exists():
             return {}
         with open(expected_file) as f:
-            return json.load(f)
+            result: dict[str, Any] = json.load(f)
+            return result
+
     return _load
 
 
 class QueryValidator:
-    """
-    Helper class for validating SQL queries in tests.
+    """Helper class for validating SQL queries in tests.
 
     Provides various assertion methods for testing query results.
     """
 
-    def __init__(self, conn: duckdb.DuckDBPyConnection):
+    def __init__(self, conn: duckdb.DuckDBPyConnection) -> None:
         self.conn = conn
 
-    def execute(self, query: str):
+    def execute(self, query: str) -> pd.DataFrame:
         """Execute query and return DataFrame."""
         return self.conn.execute(query).fetchdf()
 
@@ -107,46 +111,70 @@ class QueryValidator:
         try:
             df_sorted = df.sort_values(by=list(df.columns)).reset_index(drop=True)
         except TypeError:
-            df_sorted = df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+            df_sorted = (
+                df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+            )
 
         content = df_sorted.to_csv(index=False)
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 
-    def assert_row_count(self, query: str, expected: int, msg: str = None):
+    def assert_row_count(
+        self, query: str, expected: int, msg: Optional[str] = None
+    ) -> None:
         """Assert query returns expected number of rows."""
         df = self.execute(query)
         assert len(df) == expected, msg or f"Expected {expected} rows, got {len(df)}"
 
-    def assert_columns(self, query: str, expected_columns: list, msg: str = None):
+    def assert_columns(
+        self, query: str, expected_columns: list[str], msg: Optional[str] = None
+    ) -> None:
         """Assert query returns expected columns in order."""
         df = self.execute(query)
-        assert list(df.columns) == expected_columns, \
+        assert list(df.columns) == expected_columns, (
             msg or f"Expected columns {expected_columns}, got {list(df.columns)}"
+        )
 
-    def assert_column_exists(self, query: str, column: str, msg: str = None):
+    def assert_column_exists(
+        self, query: str, column: str, msg: Optional[str] = None
+    ) -> None:
         """Assert a specific column exists in results."""
         df = self.execute(query)
         assert column in df.columns, msg or f"Column '{column}' not found in results"
 
-    def assert_contains_value(self, query: str, column: str, value, msg: str = None):
+    def assert_contains_value(
+        self, query: str, column: str, value: Any, msg: Optional[str] = None
+    ) -> None:
         """Assert a specific value exists in a column."""
         df = self.execute(query)
-        assert value in df[column].values, \
+        assert value in df[column].values, (
             msg or f"Value '{value}' not found in column '{column}'"
+        )
 
-    def assert_not_contains_value(self, query: str, column: str, value, msg: str = None):
+    def assert_not_contains_value(
+        self, query: str, column: str, value: Any, msg: Optional[str] = None
+    ) -> None:
         """Assert a specific value does NOT exist in a column."""
         df = self.execute(query)
-        assert value not in df[column].values, \
+        assert value not in df[column].values, (
             msg or f"Value '{value}' should not be in column '{column}'"
+        )
 
-    def assert_all_values_satisfy(self, query: str, column: str, condition, msg: str = None):
+    def assert_all_values_satisfy(
+        self,
+        query: str,
+        column: str,
+        condition: Callable[[pd.Series], pd.Series],
+        msg: Optional[str] = None,
+    ) -> None:
         """Assert all values in a column satisfy a condition."""
         df = self.execute(query)
-        assert condition(df[column]).all(), \
+        assert condition(df[column]).all(), (
             msg or f"Not all values in '{column}' satisfy the condition"
+        )
 
-    def assert_no_duplicates(self, query: str, columns: list = None, msg: str = None):
+    def assert_no_duplicates(
+        self, query: str, columns: Optional[list[str]] = None, msg: Optional[str] = None
+    ) -> None:
         """Assert no duplicate rows (or in specified columns)."""
         df = self.execute(query)
         if columns:
@@ -155,7 +183,9 @@ class QueryValidator:
             has_dupes = df.duplicated().any()
         assert not has_dupes, msg or "Duplicate rows found"
 
-    def assert_sorted(self, query: str, column: str, ascending: bool = True, msg: str = None):
+    def assert_sorted(
+        self, query: str, column: str, ascending: bool = True, msg: Optional[str] = None
+    ) -> None:
         """Assert results are sorted by column."""
         df = self.execute(query)
         if ascending:
@@ -165,31 +195,37 @@ class QueryValidator:
         direction = "ascending" if ascending else "descending"
         assert is_sorted, msg or f"Results not sorted by '{column}' {direction}"
 
-    def assert_no_nulls(self, query: str, column: str, msg: str = None):
+    def assert_no_nulls(
+        self, query: str, column: str, msg: Optional[str] = None
+    ) -> None:
         """Assert no NULL values in a column."""
         df = self.execute(query)
-        assert not df[column].isna().any(), \
+        assert not df[column].isna().any(), (
             msg or f"NULL values found in column '{column}'"
+        )
 
-    def assert_all_nulls(self, query: str, column: str, msg: str = None):
+    def assert_all_nulls(
+        self, query: str, column: str, msg: Optional[str] = None
+    ) -> None:
         """Assert all values in a column are NULL."""
         df = self.execute(query)
-        assert df[column].isna().all(), \
+        assert df[column].isna().all(), (
             msg or f"Non-NULL values found in column '{column}'"
+        )
 
-    def assert_empty(self, query: str, msg: str = None):
+    def assert_empty(self, query: str, msg: Optional[str] = None) -> None:
         """Assert query returns no rows."""
         df = self.execute(query)
         assert len(df) == 0, msg or f"Expected empty result, got {len(df)} rows"
 
-    def assert_not_empty(self, query: str, msg: str = None):
+    def assert_not_empty(self, query: str, msg: Optional[str] = None) -> None:
         """Assert query returns at least one row."""
         df = self.execute(query)
         assert len(df) > 0, msg or "Expected non-empty result, got 0 rows"
 
 
 @pytest.fixture
-def validator(db_connection):
+def validator(db_connection: duckdb.DuckDBPyConnection) -> QueryValidator:
     """
     QueryValidator instance for the practice database.
 
@@ -204,7 +240,11 @@ def validator(db_connection):
 
 
 # Utility functions for generating expected results
-def generate_expected_result(conn, query: str, hints: list = None) -> dict:
+def generate_expected_result(
+    conn: duckdb.DuckDBPyConnection,
+    query: str,
+    hints: Optional[list[str]] = None,
+) -> dict[str, Any]:
     """
     Generate expected result metadata for an exercise.
 
@@ -227,7 +267,9 @@ def generate_expected_result(conn, query: str, hints: list = None) -> dict:
         try:
             df_sorted = df.sort_values(by=list(df.columns)).reset_index(drop=True)
         except TypeError:
-            df_sorted = df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+            df_sorted = (
+                df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+            )
         content = df_sorted.to_csv(index=False)
         content_hash = hashlib.sha256(content.encode()).hexdigest()[:16]
 
@@ -236,5 +278,5 @@ def generate_expected_result(conn, query: str, hints: list = None) -> dict:
         "row_count": len(df),
         "column_count": len(df.columns),
         "columns": list(df.columns),
-        "hints": hints or []
+        "hints": hints or [],
     }

@@ -1,5 +1,4 @@
-"""
-SQL Exercise Checker
+"""SQL Exercise Checker.
 
 Validates student SQL query results against expected outcomes
 without revealing the actual answers. Can be run standalone without pytest.
@@ -11,12 +10,14 @@ import json
 import os
 import sys
 from pathlib import Path
-from typing import Optional
+from types import ModuleType, TracebackType
+from typing import Any, Optional
 import duckdb
 import pandas as pd
 
 try:
     from IPython.display import display, HTML
+
     IN_NOTEBOOK = True
 except ImportError:
     IN_NOTEBOOK = False
@@ -28,21 +29,21 @@ _DATABASES_DIR = _PROJECT_ROOT / "data" / "databases"
 _SOLUTIONS_DIR = _PROJECT_ROOT / "solutions"
 
 
-def _display_html(html: str):
+def _display_html(html: str) -> None:
     """Display HTML in notebook or print fallback."""
     if IN_NOTEBOOK:
         display(HTML(html))
     else:
         # Strip HTML tags for terminal output
         import re
-        text = re.sub(r'<[^>]+>', '', html)
-        text = text.replace('&nbsp;', ' ').strip()
+
+        text = re.sub(r"<[^>]+>", "", html)
+        text = text.replace("&nbsp;", " ").strip()
         print(text)
 
 
 def _hash_dataframe(df: pd.DataFrame) -> str:
-    """
-    Create a deterministic hash of a DataFrame.
+    """Create a deterministic hash of a DataFrame.
 
     Normalizes the data by sorting to ensure consistent hashing
     regardless of row order.
@@ -55,39 +56,46 @@ def _hash_dataframe(df: pd.DataFrame) -> str:
         df_sorted = df.sort_values(by=list(df.columns)).reset_index(drop=True)
     except TypeError:
         # Handle unhashable types by converting to string
-        df_sorted = df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+        df_sorted = (
+            df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+        )
 
     # Convert to CSV string and hash
     content = df_sorted.to_csv(index=False)
     return hashlib.sha256(content.encode()).hexdigest()[:16]
 
 
-def _get_result_signature(conn: duckdb.DuckDBPyConnection, query: str) -> dict:
+def _get_result_signature(
+    conn: duckdb.DuckDBPyConnection, query: str
+) -> dict[str, Any]:
     """Execute query and get its result signature."""
     df = conn.execute(query).fetchdf()
     return {
         "row_count": len(df),
         "column_count": len(df.columns),
         "columns": list(df.columns),
-        "hash": _hash_dataframe(df)
+        "hash": _hash_dataframe(df),
     }
 
 
-def _load_solutions_module(notebook_name: str):
+def _load_solutions_module(notebook_name: str) -> Optional[ModuleType]:
     """Dynamically load the solutions module for a notebook."""
     solutions_file = _SOLUTIONS_DIR / f"{notebook_name}_solutions.py"
     if not solutions_file.exists():
         return None
 
-    spec = importlib.util.spec_from_file_location(f"{notebook_name}_solutions", solutions_file)
+    spec = importlib.util.spec_from_file_location(
+        f"{notebook_name}_solutions", solutions_file
+    )
+    if spec is None or spec.loader is None:
+        return None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
 class QueryChecker:
-    """
-    Validates SQL query results against expected outcomes.
+    """Validate SQL query results against expected outcomes.
 
     The checker compares:
     1. Column names and order
@@ -96,11 +104,10 @@ class QueryChecker:
     """
 
     def __init__(self, notebook_name: str):
-        """
-        Initialize checker for a specific notebook.
+        """Initialize checker for a specific notebook.
 
         Args:
-            notebook_name: Name like "01_select_basics" (without extension)
+            notebook_name: Name like "01_select_basics" (without extension).
         """
         self.notebook_name = notebook_name
         self.conn = self._get_connection()
@@ -111,37 +118,37 @@ class QueryChecker:
         db_path = _DATABASES_DIR / "practice.duckdb"
         if not db_path.exists():
             raise FileNotFoundError(
-                f"Database not found. Run 'python data/scripts/init_database.py' first."
+                "Database not found. Run 'python data/scripts/init_database.py' first."
             )
         return duckdb.connect(str(db_path), read_only=True)
 
-    def _load_expected_results(self) -> dict:
+    def _load_expected_results(self) -> dict[str, Any]:
         """Load expected results for this notebook."""
         results_file = _EXPECTED_RESULTS_DIR / f"{self.notebook_name}.json"
         if results_file.exists():
             with open(results_file) as f:
-                return json.load(f)
+                result: dict[str, Any] = json.load(f)
+                return result
         return {}
 
-    def _get_result_signature(self, df: pd.DataFrame) -> dict:
+    def _get_result_signature(self, df: pd.DataFrame) -> dict[str, Any]:
         """Get structural signature of query result."""
         return {
             "row_count": len(df),
             "column_count": len(df.columns),
             "columns": list(df.columns),
-            "hash": _hash_dataframe(df)
+            "hash": _hash_dataframe(df),
         }
 
     def check(self, exercise_name: str, query: str) -> bool:
-        """
-        Check if a query result matches the expected outcome.
+        """Check if a query result matches the expected outcome.
 
         Args:
-            exercise_name: Exercise identifier (e.g., "ex_01", "ex_02")
-            query: The SQL query string to validate
+            exercise_name: Exercise identifier (e.g., "ex_01", "ex_02").
+            query: The SQL query string to validate.
 
         Returns:
-            True if the query produces the expected result, False otherwise
+            True if the query produces the expected result, False otherwise.
 
         Example:
             >>> checker = QueryChecker("01_select_basics")
@@ -179,11 +186,11 @@ class QueryChecker:
         actual_sig = self._get_result_signature(result_df)
 
         # Check each component
-        column_match = actual_sig["columns"] == expected["columns"]
-        row_match = actual_sig["row_count"] == expected["row_count"]
-        hash_match = actual_sig["hash"] == expected["hash"]
+        column_match: bool = actual_sig["columns"] == expected["columns"]
+        row_match: bool = actual_sig["row_count"] == expected["row_count"]
+        hash_match: bool = actual_sig["hash"] == expected["hash"]
 
-        passed = column_match and row_match and hash_match
+        passed: bool = column_match and row_match and hash_match
 
         if passed:
             self._display_success(exercise_name, actual_sig["row_count"])
@@ -193,19 +200,19 @@ class QueryChecker:
         return passed
 
     def hint(self, exercise_name: str) -> None:
-        """
-        Display a hint for an exercise without revealing the answer.
+        """Display a hint for an exercise without revealing the answer.
 
         Args:
-            exercise_name: Exercise identifier (e.g., "ex_01")
+            exercise_name: Exercise identifier (e.g., "ex_01").
         """
         expected = self.expected.get(exercise_name, {})
         hints = expected.get("hints", [])
 
         if hints:
             html = f"""
-            <div style="padding: 12px; background-color: #cce5ff; border: 1px solid #b8daff;
-                        border-radius: 4px; color: #004085; margin: 8px 0;">
+            <div style="padding: 12px; background-color: #cce5ff;
+                        border: 1px solid #b8daff; border-radius: 4px;
+                        color: #004085; margin: 8px 0;">
                 <strong>HINT</strong> for {exercise_name}:
                 <ul style="margin: 8px 0 0 0; padding-left: 20px;">
                     {''.join(f'<li style="margin: 4px 0;">{h}</li>' for h in hints)}
@@ -216,17 +223,21 @@ class QueryChecker:
         else:
             self._display_warning(f"No hints available for '{exercise_name}'")
 
-    def _display_success(self, exercise_name: str, row_count: int):
+    def _display_success(self, exercise_name: str, row_count: int) -> None:
         """Display success message."""
+        msg = f"Query returned {row_count} row(s) with correct results."
         html = f"""
-        <div style="padding: 12px; background-color: #d4edda; border: 1px solid #c3e6cb;
-                    border-radius: 4px; color: #155724; margin: 8px 0;">
-            <strong>PASS</strong> {exercise_name}: Query returned {row_count} row(s) with correct results.
+        <div style="padding: 12px; background-color: #d4edda;
+                    border: 1px solid #c3e6cb; border-radius: 4px;
+                    color: #155724; margin: 8px 0;">
+            <strong>PASS</strong> {exercise_name}: {msg}
         </div>
         """
         _display_html(html)
 
-    def _display_failure(self, exercise_name: str, expected: dict, actual: dict):
+    def _display_failure(
+        self, exercise_name: str, expected: dict[str, Any], actual: dict[str, Any]
+    ) -> None:
         """Display failure message with helpful hints (but not answers)."""
         hints = []
 
@@ -250,14 +261,16 @@ class QueryChecker:
         # Check row count
         elif actual["row_count"] != expected["row_count"]:
             diff = actual["row_count"] - expected["row_count"]
+            exp_rows = expected["row_count"]
+            act_rows = actual["row_count"]
             if diff > 0:
                 hints.append(
-                    f"Too many rows. Expected {expected['row_count']}, got {actual['row_count']}. "
+                    f"Too many rows. Expected {exp_rows}, got {act_rows}. "
                     f"Check your WHERE conditions."
                 )
             else:
                 hints.append(
-                    f"Too few rows. Expected {expected['row_count']}, got {actual['row_count']}. "
+                    f"Too few rows. Expected {exp_rows}, got {act_rows}. "
                     f"Your filter may be too restrictive."
                 )
 
@@ -284,7 +297,7 @@ class QueryChecker:
         """
         _display_html(html)
 
-    def _display_error(self, message: str):
+    def _display_error(self, message: str) -> None:
         """Display error message."""
         html = f"""
         <div style="padding: 12px; background-color: #fff3cd; border: 1px solid #ffeeba;
@@ -294,7 +307,7 @@ class QueryChecker:
         """
         _display_html(html)
 
-    def _display_warning(self, message: str):
+    def _display_warning(self, message: str) -> None:
         """Display warning message."""
         html = f"""
         <div style="padding: 12px; background-color: #e2e3e5; border: 1px solid #d6d8db;
@@ -304,35 +317,41 @@ class QueryChecker:
         """
         _display_html(html)
 
-    def close(self):
+    def close(self) -> None:
         """Close database connection."""
-        if hasattr(self, 'conn') and self.conn:
+        if hasattr(self, "conn") and self.conn:
             self.conn.close()
 
-    def __enter__(self):
+    def __enter__(self) -> "QueryChecker":
+        """Enter context manager."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
+        """Exit context manager and close connection."""
         self.close()
 
 
 # Global checker instance cache
-_checkers = {}
+_checkers: dict[str, QueryChecker] = {}
 
 
 def check(exercise_name: str, query: str, notebook: Optional[str] = None) -> bool:
-    """
-    Convenience function to check a SQL query result.
+    """Check a SQL query result against expected outcome.
 
     This is the main function students will use in notebooks.
 
     Args:
-        exercise_name: Exercise identifier (e.g., "ex_01")
-        query: The SQL query string to validate
+        exercise_name: Exercise identifier (e.g., "ex_01").
+        query: The SQL query string to validate.
         notebook: Notebook name. If None, tries to infer from environment.
 
     Returns:
-        True if query is correct, False otherwise
+        True if query is correct, False otherwise.
 
     Example:
         >>> from sql_exercises import check
@@ -346,7 +365,7 @@ def check(exercise_name: str, query: str, notebook: Optional[str] = None) -> boo
     """
     # Try to infer notebook name if not provided
     if notebook is None:
-        notebook = os.environ.get('SQL_NOTEBOOK_NAME', 'unknown')
+        notebook = os.environ.get("SQL_NOTEBOOK_NAME", "unknown")
 
     # Get or create checker for this notebook
     if notebook not in _checkers:
@@ -356,11 +375,10 @@ def check(exercise_name: str, query: str, notebook: Optional[str] = None) -> boo
 
 
 def hint(exercise_name: str, notebook: Optional[str] = None) -> None:
-    """
-    Display a hint for an exercise.
+    """Display a hint for an exercise.
 
     Args:
-        exercise_name: Exercise identifier (e.g., "ex_01")
+        exercise_name: Exercise identifier (e.g., "ex_01").
         notebook: Notebook name. If None, tries to infer from environment.
 
     Example:
@@ -368,7 +386,7 @@ def hint(exercise_name: str, notebook: Optional[str] = None) -> None:
         >>> hint("ex_01", notebook="01_select_basics")
     """
     if notebook is None:
-        notebook = os.environ.get('SQL_NOTEBOOK_NAME', 'unknown')
+        notebook = os.environ.get("SQL_NOTEBOOK_NAME", "unknown")
 
     if notebook not in _checkers:
         _checkers[notebook] = QueryChecker(notebook)
@@ -380,17 +398,25 @@ def hint(exercise_name: str, notebook: Optional[str] = None) -> None:
 # Inline Test Runner (no pytest required)
 # =============================================================================
 
+
 class TestResult:
-    """Holds results from a single test case."""
+    """Hold results from a single test case."""
+
     def __init__(self, name: str, passed: bool, message: str = ""):
+        """Initialize test result.
+
+        Args:
+            name: Name of the test.
+            passed: Whether the test passed.
+            message: Optional message about the result.
+        """
         self.name = name
         self.passed = passed
         self.message = message
 
 
 class TestRunner:
-    """
-    Simple test runner that validates solutions against expected results.
+    """Simple test runner that validates solutions against expected results.
 
     Usage:
         runner = TestRunner()
@@ -398,7 +424,8 @@ class TestRunner:
         runner.print_summary()
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize the test runner with database connection."""
         self.results: list[TestResult] = []
         self.conn = self._get_connection()
 
@@ -412,25 +439,25 @@ class TestRunner:
             )
         return duckdb.connect(str(db_path), read_only=True)
 
-    def _load_expected(self, notebook_name: str) -> dict:
+    def _load_expected(self, notebook_name: str) -> dict[str, Any]:
         """Load expected results for a notebook."""
         results_file = _EXPECTED_RESULTS_DIR / f"{notebook_name}.json"
         if results_file.exists():
             with open(results_file) as f:
-                return json.load(f)
+                result: dict[str, Any] = json.load(f)
+                return result
         return {}
 
-    def test_query(self, name: str, query: str, expected: dict) -> TestResult:
-        """
-        Test a single query against expected results.
+    def test_query(self, name: str, query: str, expected: dict[str, Any]) -> TestResult:
+        """Test a single query against expected results.
 
         Args:
-            name: Test name (e.g., "ex_01")
-            query: SQL query to execute
-            expected: Expected result signature
+            name: Test name (e.g., "ex_01").
+            query: SQL query to execute.
+            expected: Expected result signature.
 
         Returns:
-            TestResult with pass/fail status
+            TestResult with pass/fail status.
         """
         try:
             actual = _get_result_signature(self.conn, query)
@@ -446,9 +473,13 @@ class TestRunner:
             # Build failure message
             issues = []
             if not column_match:
-                issues.append(f"columns: got {actual['columns']}, expected {expected['columns']}")
+                issues.append(
+                    f"columns: got {actual['columns']}, expected {expected['columns']}"
+                )
             if not row_match:
-                issues.append(f"rows: got {actual['row_count']}, expected {expected['row_count']}")
+                issues.append(
+                    f"rows: got {actual['row_count']}, expected {expected['row_count']}"
+                )
             if not hash_match and column_match and row_match:
                 issues.append("values differ")
 
@@ -460,14 +491,13 @@ class TestRunner:
             return TestResult(name, False, f"Error: {e}")
 
     def run_notebook_tests(self, notebook_name: str) -> list[TestResult]:
-        """
-        Run all tests for a notebook by loading solutions and expected results.
+        """Run all tests for a notebook by loading solutions and expected results.
 
         Args:
-            notebook_name: Name like "01_select_basics"
+            notebook_name: Name like "01_select_basics".
 
         Returns:
-            List of TestResult objects
+            List of TestResult objects.
         """
         # Load solutions module
         solutions = _load_solutions_module(notebook_name)
@@ -481,13 +511,10 @@ class TestRunner:
             print(f"ERROR: Expected results not found for {notebook_name}")
             return []
 
-        # Get hints from solutions module if available
-        hints = getattr(solutions, 'HINTS', {})
-
         # Find all exercise variables (ex_01, ex_02, etc.)
         exercises = []
         for attr in dir(solutions):
-            if attr.startswith('ex_'):
+            if attr.startswith("ex_"):
                 query = getattr(solutions, attr)
                 if isinstance(query, str):
                     exercises.append((attr, query))
@@ -547,34 +574,38 @@ class TestRunner:
                 if not r.passed:
                     print(f"  - {r.name}: {r.message}")
 
-    def close(self):
+    def close(self) -> None:
         """Close database connection."""
-        if hasattr(self, 'conn') and self.conn:
+        if hasattr(self, "conn") and self.conn:
             self.conn.close()
 
-    def __enter__(self):
+    def __enter__(self) -> "TestRunner":
+        """Enter context manager."""
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: Optional[type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> None:
+        """Exit context manager and close connection."""
         self.close()
 
 
 def run_tests(notebook_name: Optional[str] = None) -> bool:
-    """
-    Run tests without pytest.
+    """Run tests without pytest.
 
     Args:
-        notebook_name: Specific notebook to test, or None for all
+        notebook_name: Specific notebook to test, or None for all.
 
     Returns:
-        True if all tests passed, False otherwise
+        True if all tests passed, False otherwise.
 
     Example:
-        # Run all tests
-        python -c "from sql_exercises.checker import run_tests; run_tests()"
-
-        # Run tests for specific notebook
-        python -c "from sql_exercises.checker import run_tests; run_tests('01_select_basics')"
+        >>> from sql_exercises.checker import run_tests
+        >>> run_tests()  # Run all tests
+        >>> run_tests('01_select_basics')  # Run specific notebook
     """
     with TestRunner() as runner:
         if notebook_name:

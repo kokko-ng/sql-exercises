@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Generate Expected Results
+"""Generate Expected Results.
 
 Runs solution queries and generates the expected_results JSON files
 that the checker uses to validate student answers.
@@ -18,6 +17,11 @@ import json
 import hashlib
 import importlib.util
 from pathlib import Path
+from types import ModuleType
+from typing import Optional
+
+import duckdb
+import pandas as pd
 
 # Paths
 SCRIPT_DIR = Path(__file__).parent
@@ -27,19 +31,21 @@ EXPECTED_DIR = PROJECT_ROOT / "tests" / "expected_results"
 DB_PATH = PROJECT_ROOT / "data" / "databases" / "practice.duckdb"
 
 
-def load_solutions_module(notebook_name: str):
+def load_solutions_module(notebook_name: str) -> Optional[ModuleType]:
     """Load solutions module for a notebook."""
     solution_file = SOLUTIONS_DIR / f"{notebook_name}_solutions.py"
     if not solution_file.exists():
         return None
 
     spec = importlib.util.spec_from_file_location("solutions", solution_file)
+    if spec is None or spec.loader is None:
+        return None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-def hash_dataframe(df):
+def hash_dataframe(df: pd.DataFrame) -> str:
     """Create deterministic hash of DataFrame."""
     if df.empty:
         return hashlib.sha256(b"empty").hexdigest()[:16]
@@ -47,13 +53,17 @@ def hash_dataframe(df):
     try:
         df_sorted = df.sort_values(by=list(df.columns)).reset_index(drop=True)
     except TypeError:
-        df_sorted = df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+        df_sorted = (
+            df.astype(str).sort_values(by=list(df.columns)).reset_index(drop=True)
+        )
 
     content = df_sorted.to_csv(index=False)
     return hashlib.sha256(content.encode()).hexdigest()[:16]
 
 
-def generate_expected_for_notebook(notebook_name: str, conn):
+def generate_expected_for_notebook(
+    notebook_name: str, conn: duckdb.DuckDBPyConnection
+) -> bool:
     """Generate expected results for a single notebook."""
     print(f"\nGenerating expected results for: {notebook_name}")
 
@@ -63,18 +73,18 @@ def generate_expected_for_notebook(notebook_name: str, conn):
         return False
 
     # Get hints if available
-    hints = getattr(module, 'HINTS', {})
+    hints = getattr(module, "HINTS", {})
 
     # Find all exercise variables (ex_01, ex_02, etc.)
     exercises = {}
     for name in dir(module):
-        if name.startswith('ex_'):
+        if name.startswith("ex_"):
             query = getattr(module, name)
             if isinstance(query, str) and query.strip():
                 exercises[name] = query
 
     if not exercises:
-        print(f"  No exercises found in solutions file")
+        print("  No exercises found in solutions file")
         return False
 
     # Generate expected results
@@ -87,7 +97,7 @@ def generate_expected_for_notebook(notebook_name: str, conn):
                 "row_count": len(df),
                 "column_count": len(df.columns),
                 "columns": list(df.columns),
-                "hints": hints.get(ex_name, [])
+                "hints": hints.get(ex_name, []),
             }
             print(f"  {ex_name}: {len(df)} rows, {len(df.columns)} columns")
         except Exception as e:
@@ -98,16 +108,15 @@ def generate_expected_for_notebook(notebook_name: str, conn):
     output_file = EXPECTED_DIR / f"{notebook_name}.json"
     EXPECTED_DIR.mkdir(parents=True, exist_ok=True)
 
-    with open(output_file, 'w') as f:
+    with open(output_file, "w") as f:
         json.dump(expected, f, indent=2)
 
     print(f"  Wrote: {output_file}")
     return True
 
 
-def main():
-    import duckdb
-
+def main() -> None:
+    """Generate expected results for all or specified notebooks."""
     # Check database exists
     if not DB_PATH.exists():
         print(f"Database not found: {DB_PATH}")
@@ -122,8 +131,8 @@ def main():
     else:
         # Find all solution files
         notebooks = [
-            f.stem.replace('_solutions', '')
-            for f in SOLUTIONS_DIR.glob('*_solutions.py')
+            f.stem.replace("_solutions", "")
+            for f in SOLUTIONS_DIR.glob("*_solutions.py")
         ]
 
     if not notebooks:
@@ -139,7 +148,9 @@ def main():
 
     conn.close()
 
-    print(f"\nDone! Generated expected results for {success}/{len(notebooks)} notebooks.")
+    print(
+        f"\nDone! Generated expected results for {success}/{len(notebooks)} notebooks."
+    )
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Database Initialization Script
+"""Database Initialization Script.
 
 Generates realistic sample data for SQL exercises using Faker.
 Creates a single DuckDB database with all tables populated.
@@ -29,7 +28,7 @@ DB_PATH = PROJECT_ROOT / "data" / "databases" / "practice.duckdb"
 SCHEMA_PATH = SCRIPT_DIR / "schema.sql"
 
 
-def create_database():
+def create_database() -> duckdb.DuckDBPyConnection:
     """Create fresh database with schema."""
     # Remove existing database
     if DB_PATH.exists():
@@ -303,22 +302,62 @@ DEPARTMENTS = [
 ]
 
 JOB_TITLES = {
-    "Engineering": ["Software Engineer", "Senior Software Engineer", "Staff Engineer",
-                   "Engineering Manager", "DevOps Engineer", "QA Engineer"],
-    "Sales": ["Sales Representative", "Senior Sales Rep", "Sales Manager",
-              "Account Executive", "Sales Director"],
-    "Marketing": ["Marketing Coordinator", "Marketing Manager", "Content Strategist",
-                 "Brand Manager", "Marketing Director"],
-    "Human Resources": ["HR Coordinator", "HR Manager", "Recruiter",
-                       "HR Business Partner", "HR Director"],
-    "Finance": ["Financial Analyst", "Senior Accountant", "Finance Manager",
-               "Controller", "CFO"],
-    "Operations": ["Operations Coordinator", "Operations Manager", "Supply Chain Analyst",
-                  "Logistics Manager", "COO"],
-    "Customer Support": ["Support Representative", "Support Specialist", "Support Manager",
-                        "Customer Success Manager"],
-    "Research": ["Research Scientist", "Senior Researcher", "Research Director",
-                "Data Scientist", "ML Engineer"],
+    "Engineering": [
+        "Software Engineer",
+        "Senior Software Engineer",
+        "Staff Engineer",
+        "Engineering Manager",
+        "DevOps Engineer",
+        "QA Engineer",
+    ],
+    "Sales": [
+        "Sales Representative",
+        "Senior Sales Rep",
+        "Sales Manager",
+        "Account Executive",
+        "Sales Director",
+    ],
+    "Marketing": [
+        "Marketing Coordinator",
+        "Marketing Manager",
+        "Content Strategist",
+        "Brand Manager",
+        "Marketing Director",
+    ],
+    "Human Resources": [
+        "HR Coordinator",
+        "HR Manager",
+        "Recruiter",
+        "HR Business Partner",
+        "HR Director",
+    ],
+    "Finance": [
+        "Financial Analyst",
+        "Senior Accountant",
+        "Finance Manager",
+        "Controller",
+        "CFO",
+    ],
+    "Operations": [
+        "Operations Coordinator",
+        "Operations Manager",
+        "Supply Chain Analyst",
+        "Logistics Manager",
+        "COO",
+    ],
+    "Customer Support": [
+        "Support Representative",
+        "Support Specialist",
+        "Support Manager",
+        "Customer Success Manager",
+    ],
+    "Research": [
+        "Research Scientist",
+        "Senior Researcher",
+        "Research Director",
+        "Data Scientist",
+        "ML Engineer",
+    ],
 }
 
 SALARY_RANGES = {
@@ -335,7 +374,7 @@ SALARY_RANGES = {
 }
 
 
-def get_salary_for_title(title):
+def get_salary_for_title(title: str) -> int:
     """Get appropriate salary range based on job title."""
     for keyword, (low, high) in SALARY_RANGES.items():
         if keyword.lower() in title.lower():
@@ -343,16 +382,19 @@ def get_salary_for_title(title):
     return random.randint(50000, 100000)
 
 
-def generate_employees_data(conn):
+def generate_employees_data(conn: duckdb.DuckDBPyConnection) -> None:
     """Generate employees-related data."""
     print("Generating employees data...")
 
     # Insert departments
     for i, (name, location, budget) in enumerate(DEPARTMENTS, 1):
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO departments (department_id, department_name, location, budget)
             VALUES (?, ?, ?, ?)
-        """, [i, name, location, budget])
+        """,
+            [i, name, location, budget],
+        )
 
     # Generate employees
     employees = []
@@ -381,7 +423,9 @@ def generate_employees_data(conn):
             "manager_id": None,  # Department heads report to CEO (NULL)
             "department_id": dept_id,
         }
-        emp["email"] = f"{emp['first_name'].lower()}.{emp['last_name'].lower()}@company.com"
+        emp["email"] = (
+            f"{emp['first_name'].lower()}.{emp['last_name'].lower()}@company.com"
+        )
         employees.append(emp)
         dept_head_id = employee_id
         employee_id += 1
@@ -397,27 +441,42 @@ def generate_employees_data(conn):
                 "hire_date": fake.date_between(start_date="-8y", end_date="-1m"),
                 "job_title": title,
                 "salary": get_salary_for_title(title),
-                "commission_pct": round(random.uniform(0.05, 0.20), 2) if "Sales" in dept_name else None,
+                "commission_pct": round(random.uniform(0.05, 0.20), 2)
+                if "Sales" in dept_name
+                else None,
                 "manager_id": dept_head_id,
                 "department_id": dept_id,
             }
-            emp["email"] = f"{emp['first_name'].lower()}.{emp['last_name'].lower()}{employee_id}@company.com"
+            emp["email"] = (
+                f"{emp['first_name'].lower()}.{emp['last_name'].lower()}{employee_id}@company.com"
+            )
             employees.append(emp)
             employee_id += 1
 
     # Insert employees
     for emp in employees:
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO employees (employee_id, first_name, last_name, email, phone,
                                   hire_date, job_title, salary, commission_pct,
                                   manager_id, department_id, is_active)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            emp["id"], emp["first_name"], emp["last_name"], emp["email"],
-            fake.phone_number()[:20], emp["hire_date"], emp["job_title"],
-            emp["salary"], emp["commission_pct"], emp["manager_id"],
-            emp["department_id"], random.random() > 0.05  # 95% active
-        ])
+        """,
+            [
+                emp["id"],
+                emp["first_name"],
+                emp["last_name"],
+                emp["email"],
+                fake.phone_number()[:20],
+                emp["hire_date"],
+                emp["job_title"],
+                emp["salary"],
+                emp["commission_pct"],
+                emp["manager_id"],
+                emp["department_id"],
+                random.random() > 0.05,  # 95% active
+            ],
+        )
 
     # Generate salary history
     print("Generating salary history...")
@@ -431,14 +490,31 @@ def generate_employees_data(conn):
         for _ in range(num_changes):
             old_salary = int(current_salary * random.uniform(0.85, 0.95))
             change_date = fake.date_between(start_date=change_date, end_date="today")
-            reason = random.choice(["Annual raise", "Promotion", "Market adjustment",
-                                   "Performance bonus", "Role change"])
+            reason = random.choice(
+                [
+                    "Annual raise",
+                    "Promotion",
+                    "Market adjustment",
+                    "Performance bonus",
+                    "Role change",
+                ]
+            )
 
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO salary_history (history_id, employee_id, old_salary,
                                            new_salary, change_date, change_reason)
                 VALUES (?, ?, ?, ?, ?, ?)
-            """, [history_id, emp["id"], old_salary, current_salary, change_date, reason])
+            """,
+                [
+                    history_id,
+                    emp["id"],
+                    old_salary,
+                    current_salary,
+                    change_date,
+                    reason,
+                ],
+            )
 
             current_salary = old_salary
             history_id += 1
@@ -446,28 +522,49 @@ def generate_employees_data(conn):
     # Generate projects
     print("Generating projects...")
     PROJECT_NAMES = [
-        "Website Redesign", "Mobile App Launch", "Data Migration",
-        "CRM Integration", "Security Audit", "Cloud Migration",
-        "API Development", "Analytics Dashboard", "Inventory System",
-        "Customer Portal", "Payment Gateway", "Search Optimization",
-        "Performance Tuning", "Documentation Update", "Training Program",
-        "Market Research", "Brand Refresh", "Product Launch Q1",
-        "Product Launch Q2", "Infrastructure Upgrade", "DevOps Pipeline",
-        "Testing Framework", "Compliance Review", "Budget Planning",
-        "Annual Report"
+        "Website Redesign",
+        "Mobile App Launch",
+        "Data Migration",
+        "CRM Integration",
+        "Security Audit",
+        "Cloud Migration",
+        "API Development",
+        "Analytics Dashboard",
+        "Inventory System",
+        "Customer Portal",
+        "Payment Gateway",
+        "Search Optimization",
+        "Performance Tuning",
+        "Documentation Update",
+        "Training Program",
+        "Market Research",
+        "Brand Refresh",
+        "Product Launch Q1",
+        "Product Launch Q2",
+        "Infrastructure Upgrade",
+        "DevOps Pipeline",
+        "Testing Framework",
+        "Compliance Review",
+        "Budget Planning",
+        "Annual Report",
     ]
 
     for proj_id, name in enumerate(PROJECT_NAMES, 1):
         start = fake.date_between(start_date="-2y", end_date="today")
         end_date = start + timedelta(days=random.randint(30, 365))
-        status = random.choice(["planning", "active", "completed", "completed", "completed"])
+        status = random.choice(
+            ["planning", "active", "completed", "completed", "completed"]
+        )
         if end_date > datetime.now().date():
             status = random.choice(["planning", "active"])
 
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO projects (project_id, project_name, start_date, end_date, budget, status)
             VALUES (?, ?, ?, ?, ?, ?)
-        """, [proj_id, name, start, end_date, random.randint(50000, 500000), status])
+        """,
+            [proj_id, name, start, end_date, random.randint(50000, 500000), status],
+        )
 
     # Generate project assignments
     print("Generating project assignments...")
@@ -478,17 +575,27 @@ def generate_employees_data(conn):
         assigned_emps = random.sample(range(1, len(employees) + 1), num_assigned)
 
         for emp_id in assigned_emps:
-            role = random.choice(["Lead", "Developer", "Analyst", "Reviewer", "Contributor"])
-            conn.execute("""
+            role = random.choice(
+                ["Lead", "Developer", "Analyst", "Reviewer", "Contributor"]
+            )
+            conn.execute(
+                """
                 INSERT INTO project_assignments (assignment_id, employee_id, project_id,
                                                 role, hours_allocated, start_date, end_date)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, [
-                assignment_id, emp_id, proj_id, role,
-                random.randint(20, 200),
-                fake.date_between(start_date="-1y", end_date="today"),
-                fake.date_between(start_date="today", end_date="+6m") if random.random() > 0.3 else None
-            ])
+            """,
+                [
+                    assignment_id,
+                    emp_id,
+                    proj_id,
+                    role,
+                    random.randint(20, 200),
+                    fake.date_between(start_date="-1y", end_date="today"),
+                    fake.date_between(start_date="today", end_date="+6m")
+                    if random.random() > 0.3
+                    else None,
+                ],
+            )
             assignment_id += 1
 
     # Generate performance reviews
@@ -499,18 +606,25 @@ def generate_employees_data(conn):
         num_reviews = random.randint(1, 3)
         for _ in range(num_reviews):
             # Reviewer is the employee's manager or random senior employee
-            reviewer_id = emp["manager_id"] if emp["manager_id"] else random.randint(1, 8)
+            reviewer_id = (
+                emp["manager_id"] if emp["manager_id"] else random.randint(1, 8)
+            )
 
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO performance_reviews (review_id, employee_id, reviewer_id,
                                                 review_date, rating, comments)
                 VALUES (?, ?, ?, ?, ?, ?)
-            """, [
-                review_id, emp["id"], reviewer_id,
-                fake.date_between(start_date="-2y", end_date="today"),
-                random.choices([1, 2, 3, 4, 5], weights=[1, 5, 20, 50, 24])[0],
-                fake.paragraph(nb_sentences=3)
-            ])
+            """,
+                [
+                    review_id,
+                    emp["id"],
+                    reviewer_id,
+                    fake.date_between(start_date="-2y", end_date="today"),
+                    random.choices([1, 2, 3, 4, 5], weights=[1, 5, 20, 50, 24])[0],
+                    fake.paragraph(nb_sentences=3),
+                ],
+            )
             review_id += 1
 
     print(f"  Created {len(employees)} employees")
@@ -598,28 +712,40 @@ PRODUCTS = [
 ]
 
 
-def generate_ecommerce_data(conn):
+def generate_ecommerce_data(conn: duckdb.DuckDBPyConnection) -> None:
     """Generate ecommerce-related data."""
     print("Generating ecommerce data...")
 
     # Insert categories
     for cat_id, name, parent_id in PRODUCT_CATEGORIES:
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO categories (category_id, category_name, parent_category_id, description)
             VALUES (?, ?, ?, ?)
-        """, [cat_id, name, parent_id, fake.sentence()])
+        """,
+            [cat_id, name, parent_id, fake.sentence()],
+        )
 
     # Insert products
     for prod_id, (name, cat_id, price, cost) in enumerate(PRODUCTS, 1):
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO products (product_id, sku, product_name, description, category_id,
                                  unit_price, cost_price, stock_quantity, is_active)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            prod_id, f"SKU-{prod_id:05d}", name, fake.paragraph(),
-            cat_id, price, cost, random.randint(0, 500),
-            random.random() > 0.1  # 90% active
-        ])
+        """,
+            [
+                prod_id,
+                f"SKU-{prod_id:05d}",
+                name,
+                fake.paragraph(),
+                cat_id,
+                price,
+                cost,
+                random.randint(0, 500),
+                random.random() > 0.1,  # 90% active
+            ],
+        )
 
     # Generate customers
     print("Generating customers...")
@@ -635,21 +761,28 @@ def generate_ecommerce_data(conn):
             "created_at": created,
             "last_login": fake.date_time_between(start_date=created, end_date="now"),
             "tier": random.choices(
-                ["bronze", "silver", "gold", "platinum"],
-                weights=[50, 30, 15, 5]
-            )[0]
+                ["bronze", "silver", "gold", "platinum"], weights=[50, 30, 15, 5]
+            )[0],
         }
         customers.append(customer)
 
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO customers (customer_id, email, first_name, last_name, phone,
                                   created_at, last_login, customer_tier)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            customer["id"], customer["email"], customer["first_name"],
-            customer["last_name"], customer["phone"], customer["created_at"],
-            customer["last_login"], customer["tier"]
-        ])
+        """,
+            [
+                customer["id"],
+                customer["email"],
+                customer["first_name"],
+                customer["last_name"],
+                customer["phone"],
+                customer["created_at"],
+                customer["last_login"],
+                customer["tier"],
+            ],
+        )
 
     # Generate addresses
     print("Generating addresses...")
@@ -659,15 +792,24 @@ def generate_ecommerce_data(conn):
         num_addresses = random.randint(1, 3)
         for i in range(num_addresses):
             addr_type = "shipping" if i == 0 else random.choice(["shipping", "billing"])
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO addresses (address_id, customer_id, address_type, street_address,
                                       city, state, postal_code, country, is_default)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, [
-                address_id, customer["id"], addr_type,
-                fake.street_address(), fake.city(), fake.state_abbr(),
-                fake.zipcode(), "USA", i == 0
-            ])
+            """,
+                [
+                    address_id,
+                    customer["id"],
+                    addr_type,
+                    fake.street_address(),
+                    fake.city(),
+                    fake.state_abbr(),
+                    fake.zipcode(),
+                    "USA",
+                    i == 0,
+                ],
+            )
             address_id += 1
 
     # Generate orders
@@ -680,9 +822,12 @@ def generate_ecommerce_data(conn):
         order_date = fake.date_time_between(start_date="-2y", end_date="now")
 
         # Get customer's addresses
-        addresses = conn.execute("""
+        addresses = conn.execute(
+            """
             SELECT address_id FROM addresses WHERE customer_id = ?
-        """, [customer["id"]]).fetchall()
+        """,
+            [customer["id"]],
+        ).fetchall()
 
         if not addresses:
             continue
@@ -692,22 +837,26 @@ def generate_ecommerce_data(conn):
 
         # Generate order items first to calculate totals
         num_items = random.randint(1, 5)
-        product_ids = random.sample(range(1, len(PRODUCTS) + 1), min(num_items, len(PRODUCTS)))
+        product_ids = random.sample(
+            range(1, len(PRODUCTS) + 1), min(num_items, len(PRODUCTS))
+        )
 
-        items = []
-        subtotal = 0
+        items: list[dict[str, object]] = []
+        subtotal = 0.0
         for prod_id in product_ids:
             qty = random.randint(1, 3)
             price = PRODUCTS[prod_id - 1][2]  # unit_price
             discount = random.choice([0, 0, 0, 0.1, 0.15, 0.2])
             line_total = round(qty * price * (1 - discount), 2)
-            items.append({
-                "product_id": prod_id,
-                "quantity": qty,
-                "unit_price": price,
-                "discount_pct": discount,
-                "line_total": line_total
-            })
+            items.append(
+                {
+                    "product_id": prod_id,
+                    "quantity": qty,
+                    "unit_price": price,
+                    "discount_pct": discount,
+                    "line_total": line_total,
+                }
+            )
             subtotal += line_total
 
         tax = round(subtotal * 0.08, 2)
@@ -717,30 +866,50 @@ def generate_ecommerce_data(conn):
 
         status = random.choices(
             ["pending", "processing", "shipped", "delivered", "cancelled", "returned"],
-            weights=[5, 10, 15, 60, 7, 3]
+            weights=[5, 10, 15, 60, 7, 3],
         )[0]
 
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO orders (order_id, customer_id, order_date, shipping_address_id,
                                billing_address_id, order_status, subtotal, tax_amount,
                                shipping_cost, discount_amount, total_amount, payment_method)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            order_id, customer["id"], order_date, shipping_addr, billing_addr,
-            status, subtotal, tax, shipping, discount_amount, total,
-            random.choice(["credit_card", "debit_card", "paypal", "apple_pay"])
-        ])
+        """,
+            [
+                order_id,
+                customer["id"],
+                order_date,
+                shipping_addr,
+                billing_addr,
+                status,
+                subtotal,
+                tax,
+                shipping,
+                discount_amount,
+                total,
+                random.choice(["credit_card", "debit_card", "paypal", "apple_pay"]),
+            ],
+        )
 
         # Insert order items
         for item in items:
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO order_items (item_id, order_id, product_id, quantity,
                                         unit_price, discount_pct, line_total)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, [
-                item_id, order_id, item["product_id"], item["quantity"],
-                item["unit_price"], item["discount_pct"], item["line_total"]
-            ])
+            """,
+                [
+                    item_id,
+                    order_id,
+                    item["product_id"],
+                    item["quantity"],
+                    item["unit_price"],
+                    item["discount_pct"],
+                    item["line_total"],
+                ],
+            )
             item_id += 1
 
         order_id += 1
@@ -752,18 +921,23 @@ def generate_ecommerce_data(conn):
         customer = random.choice(customers)
         product_id = random.randint(1, len(PRODUCTS))
 
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO reviews (review_id, product_id, customer_id, rating,
                                 review_title, review_text, review_date, is_verified_purchase)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            review_id, product_id, customer["id"],
-            random.choices([1, 2, 3, 4, 5], weights=[5, 10, 15, 35, 35])[0],
-            fake.sentence(nb_words=6),
-            fake.paragraph(nb_sentences=random.randint(1, 4)),
-            fake.date_time_between(start_date="-1y", end_date="now"),
-            random.random() > 0.3  # 70% verified
-        ])
+        """,
+            [
+                review_id,
+                product_id,
+                customer["id"],
+                random.choices([1, 2, 3, 4, 5], weights=[5, 10, 15, 35, 35])[0],
+                fake.sentence(nb_words=6),
+                fake.paragraph(nb_sentences=random.randint(1, 4)),
+                fake.date_time_between(start_date="-1y", end_date="now"),
+                random.random() > 0.3,  # 70% verified
+            ],
+        )
         review_id += 1
 
     # Generate promotions
@@ -781,17 +955,26 @@ def generate_ecommerce_data(conn):
 
     for promo_id, (code, desc, dtype, value) in enumerate(PROMO_CODES, 1):
         start = fake.date_between(start_date="-6m", end_date="today")
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO promotions (promotion_id, promo_code, description, discount_type,
                                    discount_value, min_order_amount, start_date, end_date,
                                    usage_limit, times_used)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            promo_id, code, desc, dtype, value,
-            50 if dtype == "fixed_amount" else None,
-            start, start + timedelta(days=random.randint(30, 180)),
-            random.randint(100, 1000), random.randint(0, 200)
-        ])
+        """,
+            [
+                promo_id,
+                code,
+                desc,
+                dtype,
+                value,
+                50 if dtype == "fixed_amount" else None,
+                start,
+                start + timedelta(days=random.randint(30, 180)),
+                random.randint(100, 1000),
+                random.randint(0, 200),
+            ],
+        )
 
     print(f"  Created {len(customers)} customers, {order_id-1} orders")
 
@@ -801,12 +984,27 @@ def generate_ecommerce_data(conn):
 # ============================================================
 
 PAGES = [
-    "/", "/products", "/products/category/electronics", "/products/category/clothing",
-    "/products/123", "/products/456", "/products/789",
-    "/cart", "/checkout", "/checkout/success",
-    "/account", "/account/orders", "/account/settings",
-    "/about", "/contact", "/blog", "/blog/post-1", "/blog/post-2",
-    "/search", "/deals", "/new-arrivals"
+    "/",
+    "/products",
+    "/products/category/electronics",
+    "/products/category/clothing",
+    "/products/123",
+    "/products/456",
+    "/products/789",
+    "/cart",
+    "/checkout",
+    "/checkout/success",
+    "/account",
+    "/account/orders",
+    "/account/settings",
+    "/about",
+    "/contact",
+    "/blog",
+    "/blog/post-1",
+    "/blog/post-2",
+    "/search",
+    "/deals",
+    "/new-arrivals",
 ]
 
 EVENTS = [
@@ -835,7 +1033,7 @@ REFERRERS = [
 ]
 
 
-def generate_analytics_data(conn):
+def generate_analytics_data(conn: duckdb.DuckDBPyConnection) -> None:
     """Generate analytics-related data."""
     print("Generating analytics data...")
 
@@ -848,24 +1046,46 @@ def generate_analytics_data(conn):
             "anonymous_id": fake.uuid4(),
             "email": fake.email() if random.random() > 0.3 else None,
             "signup_date": signup_date,
-            "signup_source": random.choice(["organic", "paid", "referral", "social", "direct"]),
+            "signup_source": random.choice(
+                ["organic", "paid", "referral", "social", "direct"]
+            ),
             "country": random.choices(
-                ["USA", "UK", "Canada", "Germany", "France", "Australia", "Japan", "Brazil"],
-                weights=[40, 15, 10, 8, 7, 7, 7, 6]
+                [
+                    "USA",
+                    "UK",
+                    "Canada",
+                    "Germany",
+                    "France",
+                    "Australia",
+                    "Japan",
+                    "Brazil",
+                ],
+                weights=[40, 15, 10, 8, 7, 7, 7, 6],
             )[0],
-            "device_type": random.choices(["desktop", "mobile", "tablet"], weights=[45, 45, 10])[0],
-            "is_premium": random.random() > 0.85
+            "device_type": random.choices(
+                ["desktop", "mobile", "tablet"], weights=[45, 45, 10]
+            )[0],
+            "is_premium": random.random() > 0.85,
         }
         users.append(user)
 
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO users (user_id, anonymous_id, email, signup_date, signup_source,
                               country, device_type, is_premium)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            user["id"], user["anonymous_id"], user["email"], user["signup_date"],
-            user["signup_source"], user["country"], user["device_type"], user["is_premium"]
-        ])
+        """,
+            [
+                user["id"],
+                user["anonymous_id"],
+                user["email"],
+                user["signup_date"],
+                user["signup_source"],
+                user["country"],
+                user["device_type"],
+                user["is_premium"],
+            ],
+        )
 
     # Generate sessions
     print("Generating sessions...")
@@ -889,22 +1109,31 @@ def generate_analytics_data(conn):
         }
         sessions.append(session)
 
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO sessions (session_id, user_id, session_start, session_end,
                                  landing_page, exit_page, device_type, browser, os,
                                  referrer_source, referrer_medium, utm_campaign,
                                  page_views, session_duration_seconds)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, [
-            session["id"], user["id"], session_start, session_end,
-            session["landing_page"], session["exit_page"],
-            random.choice(["desktop", "mobile", "tablet"]),
-            random.choice(["Chrome", "Safari", "Firefox", "Edge"]),
-            random.choice(["Windows", "macOS", "iOS", "Android", "Linux"]),
-            referrer[0], referrer[1],
-            f"campaign_{random.randint(1, 10)}" if random.random() > 0.7 else None,
-            session["page_views"], duration
-        ])
+        """,
+            [
+                session["id"],
+                user["id"],
+                session_start,
+                session_end,
+                session["landing_page"],
+                session["exit_page"],
+                random.choice(["desktop", "mobile", "tablet"]),
+                random.choice(["Chrome", "Safari", "Firefox", "Edge"]),
+                random.choice(["Windows", "macOS", "iOS", "Android", "Linux"]),
+                referrer[0],
+                referrer[1],
+                f"campaign_{random.randint(1, 10)}" if random.random() > 0.7 else None,
+                session["page_views"],
+                duration,
+            ],
+        )
 
     # Generate page views
     print("Generating page views...")
@@ -915,18 +1144,23 @@ def generate_analytics_data(conn):
 
         for _ in range(num_views):
             time_on_page = random.randint(5, 180)
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO page_views (view_id, session_id, user_id, page_url, page_title,
                                        view_timestamp, time_on_page_seconds, scroll_depth_pct)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, [
-                view_id, session["id"], session["user_id"],
-                random.choice(PAGES),
-                fake.sentence(nb_words=4),
-                current_time,
-                time_on_page,
-                random.randint(10, 100)
-            ])
+            """,
+                [
+                    view_id,
+                    session["id"],
+                    session["user_id"],
+                    random.choice(PAGES),
+                    fake.sentence(nb_words=4),
+                    current_time,
+                    time_on_page,
+                    random.randint(10, 100),
+                ],
+            )
             current_time += timedelta(seconds=time_on_page)
             view_id += 1
 
@@ -940,17 +1174,23 @@ def generate_analytics_data(conn):
 
         for _ in range(num_events):
             event_name, event_category = random.choice(EVENTS)
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO events (event_id, session_id, user_id, event_name, event_category,
                                    event_timestamp, event_properties, page_url)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, [
-                event_id, session["id"], session["user_id"],
-                event_name, event_category,
-                current_time,
-                '{"value": ' + str(random.randint(1, 100)) + '}',
-                random.choice(PAGES)
-            ])
+            """,
+                [
+                    event_id,
+                    session["id"],
+                    session["user_id"],
+                    event_name,
+                    event_category,
+                    current_time,
+                    '{"value": ' + str(random.randint(1, 100)) + "}",
+                    random.choice(PAGES),
+                ],
+            )
             current_time += timedelta(seconds=random.randint(5, 60))
             event_id += 1
 
@@ -958,17 +1198,25 @@ def generate_analytics_data(conn):
     print("Generating conversions...")
     conversion_id = 1
     for session in random.sample(sessions, min(800, len(sessions))):
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO conversions (conversion_id, user_id, session_id, conversion_type,
                                     conversion_value, conversion_timestamp, attribution_channel)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, [
-            conversion_id, session["user_id"], session["id"],
-            random.choice(["purchase", "signup", "subscription", "lead"]),
-            round(random.uniform(10, 500), 2),
-            session["start"] + timedelta(seconds=random.randint(1, max(2, session["duration"]))),
-            random.choice(["organic", "paid_search", "social", "email", "direct", "referral"])
-        ])
+        """,
+            [
+                conversion_id,
+                session["user_id"],
+                session["id"],
+                random.choice(["purchase", "signup", "subscription", "lead"]),
+                round(random.uniform(10, 500), 2),
+                session["start"]
+                + timedelta(seconds=random.randint(1, max(2, session["duration"]))),
+                random.choice(
+                    ["organic", "paid_search", "social", "email", "direct", "referral"]
+                ),
+            ],
+        )
         conversion_id += 1
 
     # Generate A/B tests
@@ -983,34 +1231,52 @@ def generate_analytics_data(conn):
 
     for test_id, (name, status) in enumerate(AB_TESTS, 1):
         start = fake.date_between(start_date="-6m", end_date="-1m")
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO ab_tests (test_id, test_name, start_date, end_date, status)
             VALUES (?, ?, ?, ?, ?)
-        """, [
-            test_id, name, start,
-            start + timedelta(days=random.randint(14, 60)) if status == "completed" else None,
-            status
-        ])
+        """,
+            [
+                test_id,
+                name,
+                start,
+                start + timedelta(days=random.randint(14, 60))
+                if status == "completed"
+                else None,
+                status,
+            ],
+        )
 
     # Generate A/B test assignments
     assignment_id = 1
     for user in random.sample(users, min(800, len(users))):
         test_id = random.randint(1, len(AB_TESTS))
-        conn.execute("""
+        conn.execute(
+            """
             INSERT INTO ab_test_assignments (assignment_id, test_id, user_id, variant, assigned_at)
             VALUES (?, ?, ?, ?, ?)
-        """, [
-            assignment_id, test_id, user["id"],
-            random.choice(["control", "variant_a", "variant_b"]),
-            fake.date_time_between(start_date="-6m", end_date="now")
-        ])
+        """,
+            [
+                assignment_id,
+                test_id,
+                user["id"],
+                random.choice(["control", "variant_a", "variant_b"]),
+                fake.date_time_between(start_date="-6m", end_date="now"),
+            ],
+        )
         assignment_id += 1
 
     # Generate daily metrics
     print("Generating daily metrics...")
     METRICS = [
-        "daily_active_users", "page_views", "sessions", "conversions",
-        "revenue", "bounce_rate", "avg_session_duration", "new_users"
+        "daily_active_users",
+        "page_views",
+        "sessions",
+        "conversions",
+        "revenue",
+        "bounce_rate",
+        "avg_session_duration",
+        "new_users",
     ]
     SEGMENTS = ["all", "mobile", "desktop", "organic", "paid"]
 
@@ -1034,15 +1300,18 @@ def generate_analytics_data(conn):
                 if segment != "all":
                     base_value = base_value * random.uniform(0.15, 0.35)
 
-                conn.execute("""
+                conn.execute(
+                    """
                     INSERT INTO daily_metrics (metric_date, metric_name, metric_value, segment)
                     VALUES (?, ?, ?, ?)
-                """, [metric_date, metric, base_value, segment])
+                """,
+                    [metric_date, metric, base_value, segment],
+                )
 
     print(f"  Created {len(users)} users, {len(sessions)} sessions")
 
 
-def main():
+def main() -> None:
     """Main entry point."""
     print("=" * 60)
     print("SQL Exercises Database Initialization")

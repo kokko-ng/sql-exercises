@@ -1,5 +1,4 @@
-"""
-SQL Exercises Package
+"""SQL Exercises Package.
 
 Provides utilities for SQL learning exercises including:
 - check(): Validate query results without revealing answers
