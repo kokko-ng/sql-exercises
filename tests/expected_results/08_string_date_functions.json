@@ -25,7 +25,7 @@
     ]
   },
   "ex_03": {
-    "hash": "30c2e296e90b873f",
+    "hash": "4ba603b5d2ddb117",
     "row_count": 147,
     "column_count": 3,
     "columns": [
@@ -51,7 +51,7 @@
     ]
   },
   "ex_05": {
-    "hash": "0fc797264c96db1d",
+    "hash": "235225827ba8b1e1",
     "row_count": 25,
     "column_count": 2,
     "columns": [
@@ -64,7 +64,7 @@
     ]
   },
   "ex_06": {
-    "hash": "5ab581f8697b1cdd",
+    "hash": "b131767d77c28f1f",
     "row_count": 147,
     "column_count": 4,
     "columns": [
@@ -92,7 +92,7 @@
     ]
   },
   "ex_08": {
-    "hash": "a7f517b37e9b4c38",
+    "hash": "24b604950cc87d03",
     "row_count": 25,
     "column_count": 2,
     "columns": [
@@ -117,7 +117,7 @@
     ]
   },
   "ex_10": {
-    "hash": "c6945c589f8498a0",
+    "hash": "421d365cdecda349",
     "row_count": 147,
     "column_count": 3,
     "columns": [
