@@ -119,16 +119,17 @@
     ]
   },
   "ex_09": {
-    "hash": "2e1cfa82b035c26c",
-    "row_count": 0,
-    "column_count": 2,
+    "hash": "3b9e854d97549f16",
+    "row_count": 10,
+    "column_count": 3,
     "columns": [
-      "product_id",
-      "product_name"
+      "customer_id",
+      "first_name",
+      "last_name"
     ],
     "hints": [
-      "LEFT JOIN products to reviews",
-      "WHERE review_id IS NULL"
+      "LEFT JOIN customers to orders",
+      "WHERE order_id IS NULL"
     ]
   },
   "ex_10": {

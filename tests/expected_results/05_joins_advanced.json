@@ -50,7 +50,8 @@
       "parent_category_name"
     ],
     "hints": [
-      "Self join categories on parent_category_id"
+      "Self join categories on parent_category_id",
+      "Use LEFT JOIN to include categories without parents"
     ]
   },
   "ex_05": {

@@ -59,7 +59,7 @@
       "order_count"
     ],
     "hints": [
-      "DATE_TRUNC groups by month",
+      "DATE_TRUNC('month', order_date) returns first day of month",
       "GROUP BY the same expression"
     ]
   },
